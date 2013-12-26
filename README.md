@@ -5,13 +5,21 @@ Implements in R some of the ideas found in the Bailey et al. paper identified be
 
 The reference authors used the Sharpe ratio as the performance measure.  Other measures are suitable according to the assumptions laid out in the paper.
 
-Example plots attached below.
+Example plots attached below.  The first four illustrate a test with low overfitting (T-distribution, N=100, T=1600, S=8). The second four illustrate a test from the reference paper with high overfitting (normal distribution, N=100, T=1000, S=8).
+
+Example test case, low overfitting:
 
 ![plot1](figures/plot1.png)
 ![plot2](figures/plot2.png)
 ![plot3](figures/plot3.png)
 ![plot4](figures/plot4.png)
 
+Reference test case 1, high overfitting:
+
+![plot1](figures/tc1_1.png)
+![plot2](figures/tc1_2.png)
+![plot3](figures/tc1_3.png)
+![plot4](figures/tc1_4.png)
 
 Packages
 --------
