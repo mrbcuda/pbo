@@ -13,28 +13,36 @@
 require(utils,quietly=TRUE)
 require(PerformanceAnalytics,quietly=TRUE) # for performance measure
 
-##### setup
+##### profile
 
 INF_SUB = 6             # replace Inf with something for plotting
 BAR_COLOR = "#cc99cc"   # plot bar fill color
 LINE_COLOR = "#3366cc"  # plot line color
 TEST_COLOR = "#339999"  # plot test line color
 
-N = 100                 # studies, alternative configurations
-T = 1600                # sample returns
+##### test setup t100
+# populating the matrix M with samples from an installed distribution
+# see also some reference tests in the tests file
+
+N = 200                 # studies, alternative configurations
+T = 3200                # sample returns
 S = 8                   # partition count
-CS = combn(S,S/2)       # combinations
-SN = T / S              # partition size
 
-
-# create some data
 M <- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),
                 check.names=FALSE)
-for ( i in 1:N ) M[,i] <- rt(T,6) / 100
+for ( i in 1:N ) M[,i] <- rt(T,10) / 100
+
+
+##### derived setup
+
+CS = combn(S,S/2)       # combinations
+SN = T / S              # partition size
+test_config = bquote(N == .(N) ~~ T == .(T) ~~ S == .(S))
 
 ##### analyze
 
-# results lists
+
+# initialize results lists
 cs_results = list()
 
 # for each partition combination
@@ -55,19 +63,20 @@ for ( cs in 1:ncol(CS) ) {
   
   # training and test sets (in sample, out of sample)
   # choosing not to reassign row names of each to 1:(T/2)
+  # after R don't need to save J or J_bar so could skip this assignment
   J = M[is_indices,]
   J_bar = M[os_indices,]
   
   # compute Omega ratio over the N strategies in each subset
   # could use for R any summary statistic e.g. SharpeRatio
-  R = mapply(Omega,J)
-  R_bar = mapply(Omega,J_bar)
+  R = mapply(Omega,J) # mapply(sharpe,J) 
+  R_bar = mapply(Omega,J_bar) # mapply(sharpe,J_bar)
   
   # compute n* by argmax over R vector
   n_star = which.max(R)
   
   # rank of n*th result from OOS performance; converted to (0,1) interval
-  omega_bar_c = rank(R_bar)[n_star] / N
+  omega_bar_c = rank(R_bar)[n_star] / length(R_bar)
   
   # logit
   # note the value can be Inf
@@ -103,14 +112,19 @@ colnames(rn_pairs) <- c("Rn","Rbn")
 
 # linear fit to pairs, extract results for plot annotations
 linear_fit = lm(rn_pairs)
-m = signif(as.numeric(linear_fit$coefficients[1]),digits=5)
-b = signif(as.numeric(linear_fit$coefficients[2]),digits=5)
-ar2 = signif(summary(linear_fit)$adj.r.squared,digits=2) 
+m = signif(as.numeric(linear_fit$coefficients[1]),digits=5) # slope
+b = signif(as.numeric(linear_fit$coefficients[2]),digits=5) # intercept
+ar2 = signif(summary(linear_fit)$adj.r.squared,digits=2) # adj R-squared
   
 # probability R(OOS) < 1 for Omega, ratio of <1 to total
-p_oos_lt1 = signif(length(which(rn_pairs$Rbn<1)) / nrow(rn_pairs),digits=3)
+# we're using Omega so threshold 1 rather than 0 for Sharpe
+threshold = 1
+
+p_oos_lt1 = signif(length(which(rn_pairs$Rbn<threshold)) / 
+                     nrow(rn_pairs),digits=3)
 
 #################### GRAPHICS
+  
 require(lattice,quietly=TRUE)
 require(grid,quietly=TRUE)
 
@@ -130,6 +144,10 @@ histogram(lambda,
                       x = xa, 
                       y = ya, 
                       just = "left") 
+            grid.text(label = test_config,
+                      x = unit(1.0,"npc") - unit(2,"mm"),
+                      y=ya,
+                      just = "right")
             grid.text(label = "Less overfit",
                       x = unit(0.5,"npc") + unit(2,"mm"), 
                       y=ya,
@@ -142,7 +160,7 @@ histogram(lambda,
 )
 
 # performance degradation and probability of loss
-# we're using Omega so threshold 1 rather than 0 for Sharpe
+
 # plot Rn pairs
 cloud_span = c(signif(min(rn_pairs),-3),
                signif(max(rn_pairs),3)) # axis range
@@ -156,8 +174,8 @@ xyplot(rn_pairs$Rbn ~ rn_pairs$Rn,
        panel = function(x, ...){
          panel.xyplot(x,col=BAR_COLOR,...)
          panel.lmline(x,col=LINE_COLOR,...)
-         panel.abline(v=1,type="l",lty=3)
-         panel.abline(h=1,type="l",lty=3)    
+         panel.abline(v=threshold,type="l",lty=3)
+         panel.abline(h=threshold,type="l",lty=3)    
          panel.rug(x,col=BAR_COLOR,...)
          ya <- unit(1, "npc") - unit(3, "mm") 
          grid.text(label = bquote(R_OOS == .(b) (R_IS) + .(m) + err ~~ AdjR^2 == .(ar2)), 
@@ -165,11 +183,23 @@ xyplot(rn_pairs$Rbn ~ rn_pairs$Rn,
                    y = ya, 
                    just = "left",
                    gp=gpar(col=LINE_COLOR)) 
-         grid.text(label = bquote(P(R_OOS<1) ==  .(p_oos_lt1)), 
-                   x = unit(1, "npc") - unit(3, "mm"), 
-                   y = ya, 
-                   just = "right",
-                   gp=gpar(col=BAR_COLOR)) 
+         grid.text(label = test_config,
+                   x = unit(1,"npc") - unit(3,"mm"),
+                   y = ya,
+                   just="right")
+         if ( threshold == 1 ) { # ugly but ifelse won't work on bquote
+           grid.text(label = bquote(P(R_OOS<1) ==  .(p_oos_lt1)),
+                     x = unit(1, "npc") - unit(3, "mm"), 
+                     y = ya - unit(10,"mm"), 
+                     just = "right",
+                     gp=gpar(col=BAR_COLOR)) 
+         } else {
+           grid.text(label = bquote(P(R_OOS<0) ==  .(p_oos_lt1)),
+                     x = unit(1, "npc") - unit(3, "mm"), 
+                     y = ya - unit(10,"mm"), 
+                     just = "right",
+                     gp=gpar(col=BAR_COLOR))
+         }
        }
 )
 
@@ -198,7 +228,7 @@ xyplot(Rbn + Rb ~ y,
        xlab=expression(bar(R)[n^textstyle("*")] ~~ plain(vs.) ~~ bar(R)),
        panel = function(x, ...){
          panel.xyplot(x,...)
-         panel.abline(v=1,type="l",lty=3)
+         panel.abline(v=threshold,type="l",lty=3)
          grid.text(label = expression(paste(italic(Prob), 
                                             group("[",bar(R)[n^textstyle("*")] >= x,"]"),
                                             " > ",
@@ -208,6 +238,10 @@ xyplot(Rbn + Rb ~ y,
                    y = unit(0, "npc") + unit(3, "mm"), 
                    just = "right",
                    gp=gpar(col=LINE_COLOR)) 
+         grid.text(label=test_config,
+                   x = unit(1,"npc") - unit(3,"mm"),
+                   y = unit(1,"npc") - unit(3,"mm"),
+                   just="right")
        }
 )
 
@@ -231,7 +265,7 @@ xyplot(Rbn + Rb ~ y,
        xlab=expression(bar(R)[n^textstyle("*")] ~~ plain(vs.) ~~ bar(R)),
        panel = function(x, ...){
          panel.xyplot(x,...)
-         panel.abline(v=1,type="l",lty=3)
+         panel.abline(v=threshold,type="l",lty=3)
          grid.text(label = expression(paste(italic(Prob), 
                                             group("[",bar(R)[n^textstyle("*")] >= x,"]"),
                                             " > ",
@@ -241,6 +275,10 @@ xyplot(Rbn + Rb ~ y,
                    y = unit(0, "npc") + unit(3, "mm"), 
                    just = "left",
                    gp=gpar(col=LINE_COLOR)) 
+         grid.text(label=test_config,
+                   x = unit(1,"npc") - unit(3,"mm"),
+                   y = unit(1,"npc") - unit(3,"mm"),
+                   just="right")
        }
 ) + as.layer(xyplot(SD2 ~ y,
                     data=sorted,
