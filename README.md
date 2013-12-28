@@ -21,10 +21,29 @@ Reference test case 1, high overfitting:
 ![plot3](figures/tc1_3.png)
 ![plot4](figures/tc1_4.png)
 
+Example
+-------
+```{r}
+require(PerformanceAnalytics) # for Omega ratio
+
+N <- 200                 # studies, alternative configurations
+T <- 3200                # sample returns
+S <- 8                   # partition count
+
+# load the matrix with samples for N alternatives
+M <- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),check.names=FALSE)
+for ( i in 1:N ) M[,i] <- rt(T,10) / 100
+
+# compute and plot
+my_pbo = pbo(M,S,F=Omega,threshold=1)
+pbo_logit(my_pbo)
+pbo_degradation(my_pbo)
+pbo_dominance(my_pbo)
+```
+
 Packages
 --------
 * `utils` for the combinations
-* `PerformanceAnalytics` for the Omega ratio
 * `lattice` for plots
 * `latticeExtra` over plot overlays only for the SD2 measure
 
