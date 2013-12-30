@@ -21,6 +21,13 @@ Reference test case 1, high overfitting:
 ![plot3](figures/tc1_3.png)
 ![plot4](figures/tc1_4.png)
 
+Installation
+------------
+```{r}
+require(devtools)
+install_github('pbo',username='mrbcuda')
+```
+
 Example
 -------
 ```{r}
