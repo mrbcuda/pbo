@@ -1,0 +1,6 @@
+# exportPattern("^[[:alpha:]]+")
+#importFrom(utils,combn)
+#importFrom(lattice,xyplot,panel.xyplot,panel.lmline,panel.abline,panel.rug,panel.histogram,panel.densityplot)
+#importFrom(latticeExtra,as.layer)
+#import(grid)
+export(pbo,pbo_logit,pbo_degradation,pbo_dominance)

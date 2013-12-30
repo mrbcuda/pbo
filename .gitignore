@@ -2,6 +2,7 @@
 .Rhistory
 .Rproj.*
 .RData
+*.Rcheck/*
 
 # Example code in package build process
 *-Ex.R

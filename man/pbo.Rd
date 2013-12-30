@@ -1,0 +1,31 @@
+\name{pbo}
+\alias{pbo}
+\title{PBO performs probability of backtest overfitting computation via CSCV.}
+\usage{
+  pbo(M, S = 4, F = NA, threshold = 0, inf_sub = 6)
+}
+\arguments{
+  \item{M}{a \eqn{TxN} data frame of returns, where \eqn{T}
+  is the samples per study and \eqn{N} is the number of
+  studies.}
+
+  \item{S}{the number of subsets of \eqn{M} for CSCV
+  combinations; must evenly divide \eqn{M}}
+
+  \item{F}{the function to evaluate a study's performance;
+  required}
+
+  \item{threshold}{the performance metric threshold (e.g. 0
+  for Sharpe, 1 for Omega)}
+
+  \item{inf_sub}{infinity substitution value for reasonable
+  plotting}
+}
+\value{
+  list of PBO calculation results and settings
+}
+\description{
+  PBO performs probability of backtest overfitting
+  computation via CSCV.
+}
+
