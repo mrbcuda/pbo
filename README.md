@@ -1,6 +1,8 @@
 Probability of Backtest Overfitting
 ===================================
 
+[![Build Status](https://travis-ci.org/mrbcuda/pbo.png?branch=master,dev)](https://travis-ci.org/mrbcuda/pbo)
+
 Implements in R some of the ideas found in the Bailey et al. paper identified below.  In particular we use combinatorially symmetric cross validation (CSCV) to implement strategy performance tests evaluated by the Omega ratio. We compute the probability of backtest overfit, performance degradation, probability of loss, and stochastic dominance.  We plot visual representations of these using the `lattice` package.     
 
 The reference authors used the Sharpe ratio as the performance measure.  Other measures are suitable according to the assumptions laid out in the paper.
