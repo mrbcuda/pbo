@@ -3,6 +3,7 @@
 .Rproj.*
 .RData
 *.Rcheck/*
+README.html
 
 # Example code in package build process
 *-Ex.R
