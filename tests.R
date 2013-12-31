@@ -1,8 +1,8 @@
 #' Tests from reference paper.
 #' No, low, and high overfit.  
-#' So far hese work occasionally, but the low and high usually result in PBO=1
+#' So far these work occasionally, but the low and high usually result in PBO=1
 
-# mock Sharpe ratio, one percent daily reference
+# mock Sharpe ratio, one percent annual reference on daily returns
 # as used for reference test case reproduction
 require(PerformanceAnalytics,quietly=TRUE)
 sharpe = function(x,rf=0.01/260) {
