@@ -3,4 +3,4 @@
 #importFrom(lattice,xyplot,panel.xyplot,panel.lmline,panel.abline,panel.rug,panel.histogram,panel.densityplot)
 #importFrom(latticeExtra,as.layer)
 #import(grid)
-export(pbo,pbo_logit,pbo_degradation,pbo_dominance)
+export(pbo,pbo_logit,pbo_degradation,pbo_dominance,pbo_performance_dot,pbo_performance_xy,pbo_performance_pairs,pbo_performance_cases,pbo_performance_ranks)
