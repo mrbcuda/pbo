@@ -72,7 +72,8 @@ pbo_dominance <- function(data,
                        y = unit(1,"npc") - unit(3,"mm"),
                        just="right")
            }
-         }
+         },
+         ...
   ) + as.layer(xyplot(SD2 ~ y,
                       data=sorted,
                       type="l",

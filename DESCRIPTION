@@ -1,8 +1,8 @@
 Package: pbo
 Type: Package
 Title: Probability of Backtest Overfitting
-Version: 1.0
-Date: 2013-12-27
+Version: 1.1
+Date: 2014-01-03
 Author: Matt Barry
 Maintainer: Matt Barry <mrb@softisms.com>
 Description: Following the method of Bailey et al., computes for a collection of candidate models the probability of backtest overfitting, the performance degradation and probability of loss, and the stochastic dominance.

@@ -48,19 +48,21 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
     
     # compute n* by argmax over R vector
     n_star <- which.max(R)
+    n_max_oos <- which.max(R_bar)
     
     # rank of n*th result from OOS performance; converted to (0,1) interval
-    omega_bar_c <- rank(R_bar)[n_star] / length(R_bar)
+    os_rank <- rank(R_bar)[n_star]
+    omega_bar_c <- os_rank / length(R_bar)
     
     # logit
     # note the value can be Inf
     lambda_c <- log(omega_bar_c / (1 - omega_bar_c))
     
     # save the results
-    cs_results <- rbind(cs_results,list(R,R_bar,n_star,omega_bar_c,lambda_c))
+    cs_results <- rbind(cs_results,list(R,R_bar,n_star,n_max_oos,os_rank,omega_bar_c,lambda_c))
   }
   
-  colnames(cs_results) <- c("R","R_bar","n*","omega_bar","lambda")
+  colnames(cs_results) <- c("R","R_bar","n*","n_max_oos","os_rank","omega_bar","lambda")
   rownames(cs_results) <- 1:ncol(CS)
   
   lambda <- as.numeric(cs_results[,"lambda"])

@@ -11,9 +11,9 @@ sharpe = function(x,rf=0.01/260) {
 
 
 ##### test setup TC1 full overfit
-N = 100
-T = 1000
-S = 8
+N = 200
+T = 2000
+S = 16
 sr_base = 0
 
 
