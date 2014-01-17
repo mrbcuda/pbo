@@ -1,8 +1,8 @@
 \name{pbo}
 \alias{pbo}
-\title{PBO performs probability of backtest overfitting computation via CSCV.}
+\title{Perform probability of backtest overfitting computation via CSCV.}
 \usage{
-  pbo(M, S = 4, F = NA, threshold = 0, inf_sub = 6)
+  pbo(M, S = 4, ep = NA, threshold = 0, inf_sub = 6)
 }
 \arguments{
   \item{M}{a \eqn{TxN} data frame of returns, where \eqn{T}
@@ -12,7 +12,7 @@
   \item{S}{the number of subsets of \eqn{M} for CSCV
   combinations; must evenly divide \eqn{M}}
 
-  \item{F}{the function to evaluate a study's performance;
+  \item{ep}{the function to evaluate a study's performance;
   required}
 
   \item{threshold}{the performance metric threshold (e.g. 0
@@ -25,7 +25,7 @@
   list of PBO calculation results and settings
 }
 \description{
-  PBO performs probability of backtest overfitting
-  computation via CSCV.
+  Perform probability of backtest overfitting computation
+  via CSCV.
 }
 

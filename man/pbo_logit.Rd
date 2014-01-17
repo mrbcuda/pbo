@@ -5,7 +5,8 @@
   pbo_logit(data, main = "Rank Logits",
     col_bar = "#cc99cc", col_line = "#3366cc",
     hist_type = "density", show_pbo = TRUE,
-    show_regions = TRUE, show_config = TRUE, ...)
+    show_regions = TRUE, show_config = TRUE,
+    show_grid = FALSE, ...)
 }
 \arguments{
   \item{data}{a list as returned by pbo()}
@@ -27,6 +28,8 @@
 
   \item{show_config}{whether to show the study dimension
   annotations, default TRUE}
+
+  \item{show_grid}{whether to show the background gried}
 
   \item{...}{other parameters passed to 'histogram' or
   'densityplot'}

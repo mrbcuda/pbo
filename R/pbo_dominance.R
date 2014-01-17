@@ -9,6 +9,7 @@
 #' @param increment step increment value for the cumulative distribution estimation
 #' @param show_config whether to show the study dimension annotations, default TRUE
 #' @param show_prob whether to show the probability equation annotation, default TRUE
+#' @param show_grid whether to show the background grid
 #' @param ... other parameters passed to 'xyplot'
 pbo_dominance <- function(data,
                           main="Stochastic Dominance",
@@ -19,6 +20,7 @@ pbo_dominance <- function(data,
                           increment=0.01,
                           show_config=TRUE,
                           show_prob=TRUE,
+                          show_grid=FALSE,
                           ...) 
 {
   require(lattice,quietly=TRUE)
@@ -54,6 +56,9 @@ pbo_dominance <- function(data,
          xlab=expression(bar(R)[n^textstyle("*")] ~~ plain(vs.) ~~ bar(R)),
          panel = function(x, ...){
            panel.xyplot(x,...)
+           if (show_grid) {
+             panel.grid(-1,-1,col="lightgray",...)
+           }
            panel.abline(v=data$threshold,type="l",lty=3)
            if (show_prob) {
              grid.text(label = expression(paste(italic(Prob), 

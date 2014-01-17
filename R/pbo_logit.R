@@ -8,6 +8,7 @@
 #' @param show_pbo whether to show the PBO value annotation, default TRUE
 #' @param show_regions whether to show the overfit region annotations, default TRUE
 #' @param show_config whether to show the study dimension annotations, default TRUE
+#' @param show_grid whether to show the background gried
 #' @param ... other parameters passed to 'histogram' or 'densityplot'
 pbo_logit <- function(data,
                       main="Rank Logits",
@@ -17,6 +18,7 @@ pbo_logit <- function(data,
                       show_pbo=TRUE,
                       show_regions=TRUE,
                       show_config=TRUE,
+                      show_grid=FALSE,
                       ...) 
 {
   require(lattice,quietly=TRUE)
@@ -39,6 +41,9 @@ pbo_logit <- function(data,
                           x = xa, 
                           y = ya, 
                           just = "left") 
+              }
+              if (show_grid) {
+                panel.grid(-1,-1,col="lightgray",...)
               }
               if (show_config) {
                 grid.text(label = data$test_config,

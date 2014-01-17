@@ -10,6 +10,7 @@
 #' @param show_threshold whether to show the probability of loss annotation, default TRUE
 #' @param show_config whether to show the study dimension annotations, default TRUE
 #' @param show_rug whether to show the scatter rug near the axes
+#' @param show_grid whether to show the background grid
 #' @param ... other parameters passed to 'xyplot' or 'lmline'
 pbo_degradation <- function(data,
                             main="OOS Performance Degradation",
@@ -21,6 +22,7 @@ pbo_degradation <- function(data,
                             show_threshold=TRUE,
                             show_config=TRUE,
                             show_rug=TRUE,
+                            show_grid=FALSE,
                             ...) 
 {
   require(lattice,quietly=TRUE)
@@ -38,6 +40,9 @@ pbo_degradation <- function(data,
          ylim = cloud_span,
          panel = function(x, ...){
            panel.xyplot(x,col=col_bar,...)
+           if (show_grid) {
+             panel.grid(-1,-1,col="lightgray",...)
+           }
            panel.lmline(x,col=col_line,...)
            panel.abline(v=data$threshold,type="l",lty=3)
            panel.abline(h=data$threshold,type="l",lty=3)    

@@ -1,13 +1,28 @@
 Package: pbo
 Type: Package
 Title: Probability of Backtest Overfitting
-Version: 1.1
-Date: 2014-01-03
+Version: 1.2
+Date: 2014-01-16
 Author: Matt Barry
 Maintainer: Matt Barry <mrb@softisms.com>
-Description: Following the method of Bailey et al., computes for a collection of candidate models the probability of backtest overfitting, the performance degradation and probability of loss, and the stochastic dominance.
+Description: Following the method of Bailey et al., computes for a collection
+    of candidate models the probability of backtest overfitting, the
+    performance degradation and probability of loss, and the stochastic
+    dominance.
 License: MIT
 URL: https://github.com/mrbcuda/pbo
 BugReports: https://github.com/mrbcuda/pbo/issues
-Depends: lattice, latticeExtra, grid, utils
-Suggests: PerformanceAnalytics
+Depends:
+    lattice,
+    latticeExtra,
+    grid,
+    utils
+Suggests:
+    PerformanceAnalytics
+Collate:
+    'pbo-package.R'
+    'pbo.R'
+    'pbo_degradation.R'
+    'pbo_dominance.R'
+    'pbo_logit.R'
+    'pbo_performance.R'

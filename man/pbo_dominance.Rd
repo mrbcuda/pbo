@@ -7,7 +7,7 @@
     ylab_right = "2nd Ord. Stochastic Dominance",
     col_sd1 = "#3366cc", col_sd2 = "#339999",
     increment = 0.01, show_config = TRUE, show_prob = TRUE,
-    ...)
+    show_grid = FALSE, ...)
 }
 \arguments{
   \item{data}{a list as returned by pbo()}
@@ -30,6 +30,8 @@
 
   \item{show_prob}{whether to show the probability equation
   annotation, default TRUE}
+
+  \item{show_grid}{whether to show the background grid}
 
   \item{...}{other parameters passed to 'xyplot'}
 }

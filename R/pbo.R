@@ -1,13 +1,13 @@
 
-#' PBO performs probability of backtest overfitting computation via CSCV.
+#' Perform probability of backtest overfitting computation via CSCV.
 #' @param M a \eqn{TxN} data frame of returns, where \eqn{T} is the samples per study and \eqn{N} is the number of studies.
 #' @param S the number of subsets of \eqn{M} for CSCV combinations; must evenly divide \eqn{M} 
-#' @param F the function to evaluate a study's performance; required
+#' @param ep the function to evaluate a study's performance; required
 #' @param threshold the performance metric threshold (e.g. 0 for Sharpe, 1 for Omega)
 #' @param inf_sub infinity substitution value for reasonable plotting
 #' @return list of PBO calculation results and settings
-pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
-  stopifnot(is.function(F))
+pbo <- function(M,S=4,ep=NA,threshold=0,inf_sub=6) {
+  stopifnot(is.function(ep))
   require(utils,quietly=TRUE)
   
   T <- nrow(M)             # samples per study
@@ -33,7 +33,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
     }))
     
     # out-of-sample indices
-    os_indices <- which(1:T != is_indices)
+    os_indices <- setdiff(1:T,is_indices) 
     
     # training and test sets (in sample, out of sample)
     # choosing not to reassign row names of each to 1:(T/2)
@@ -42,9 +42,9 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
     J_bar <- M[os_indices,]
     
     # compute performance over the N strategies in each subset
-    # could use for R any summary statistic e.g. SharpeRatio or Omega
-    R <- mapply(F,J) # mapply(sharpe,J) 
-    R_bar <- mapply(F,J_bar) # mapply(sharpe,J_bar)
+    # could use for ep any summary statistic e.g. SharpeRatio or Omega
+    R <- ep(J) # mapply(ep,J)  
+    R_bar <- ep(J_bar) # mapply(ep,J_bar) 
     
     # compute n* by argmax over R vector
     n_star <- which.max(R)
@@ -101,7 +101,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
     lambda=lambda,
     phi=phi,
     rn_pairs=rn_pairs,
-    func=as.character(substitute(F)),
+    func=as.character(substitute(ep)),
     slope=m,
     intercept=b,
     ar2=ar2,

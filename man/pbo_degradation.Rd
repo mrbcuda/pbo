@@ -7,7 +7,7 @@
     ylab = "R (IS)", col_bar = "#cc99cc",
     col_line = "#3366cc", show_eqn = TRUE,
     show_threshold = TRUE, show_config = TRUE,
-    show_rug = TRUE, ...)
+    show_rug = TRUE, show_grid = FALSE, ...)
 }
 \arguments{
   \item{data}{a list as returned by pbo()}
@@ -34,6 +34,8 @@
 
   \item{show_rug}{whether to show the scatter rug near the
   axes}
+
+  \item{show_grid}{whether to show the background grid}
 
   \item{...}{other parameters passed to 'xyplot' or
   'lmline'}
