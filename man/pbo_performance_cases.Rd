@@ -5,6 +5,9 @@
 rank exceeding a given threshold.}
 \usage{
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> FETCH_HEAD
   pbo_performance_cases(data, osr_threshold = 0,
     xlab = "CSCV Case", ylab = "Selected Study (N)",
     show_rug = TRUE, show_config = TRUE, show_grid = FALSE,

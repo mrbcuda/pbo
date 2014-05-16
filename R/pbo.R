@@ -9,12 +9,15 @@
 #' @return list of PBO calculation results and settings
 pbo <- function(M,S=4,ep=NA,threshold=0,inf_sub=6) {
   stopifnot(is.function(ep))
+<<<<<<< HEAD
 =======
 #' @param allow_parallel whether to enable parallel processing, default FALSE
 #' @return object of class 'pbo' containing list of PBO calculation results and settings
 pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
   stopifnot(is.function(F))
 >>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
+=======
+>>>>>>> FETCH_HEAD
   require(utils,quietly=TRUE)
   
   T <- nrow(M)             # samples per study
@@ -49,6 +52,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     
     # compute performance over the N strategies in each subset
 <<<<<<< HEAD
+<<<<<<< HEAD
     # could use for ep any summary statistic e.g. SharpeRatio or Omega
     R <- ep(J) # mapply(ep,J)  
     R_bar <- ep(J_bar) # mapply(ep,J_bar) 
@@ -57,6 +61,11 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     R <- mapply(F,J)
     R_bar <- mapply(F,J_bar)
 >>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
+=======
+    # could use for ep any summary statistic e.g. SharpeRatio or Omega
+    R <- ep(J) # mapply(ep,J)  
+    R_bar <- ep(J_bar) # mapply(ep,J_bar) 
+>>>>>>> FETCH_HEAD
     
     # compute n* by argmax over R vector
     n_star <- which.max(R)

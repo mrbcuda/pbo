@@ -4,11 +4,15 @@
 \title{Perform probability of backtest overfitting computation via CSCV.}
 \usage{
 <<<<<<< HEAD
+<<<<<<< HEAD
   pbo(M, S = 4, ep = NA, threshold = 0, inf_sub = 6)
 =======
 pbo(M, S = 4, F = NA, threshold = 0, inf_sub = 6,
   allow_parallel = FALSE)
 >>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
+=======
+  pbo(M, S = 4, ep = NA, threshold = 0, inf_sub = 6)
+>>>>>>> FETCH_HEAD
 }
 \arguments{
 \item{M}{a \eqn{TxN} data frame of returns, where \eqn{T} is the samples per study and \eqn{N} is the number of studies.}
@@ -16,6 +20,9 @@ pbo(M, S = 4, F = NA, threshold = 0, inf_sub = 6,
 \item{S}{the number of subsets of \eqn{M} for CSCV combinations; must evenly divide \eqn{M}}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> FETCH_HEAD
   \item{ep}{the function to evaluate a study's performance;
   required}
 =======
@@ -33,10 +40,15 @@ object of class 'pbo' containing list of PBO calculation results and settings
 }
 \description{
 <<<<<<< HEAD
+<<<<<<< HEAD
   Perform probability of backtest overfitting computation
   via CSCV.
 =======
 PBO performs probability of backtest overfitting computation via CSCV.
 >>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
+=======
+  Perform probability of backtest overfitting computation
+  via CSCV.
+>>>>>>> FETCH_HEAD
 }
 

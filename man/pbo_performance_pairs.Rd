@@ -5,6 +5,9 @@
 exceeding a given threshold.}
 \usage{
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> FETCH_HEAD
   pbo_performance_pairs(data, osr_threshold = 0,
     xlab = "IS Selection (N)",
     ylab = "OOS Counterpart Selection (N)",

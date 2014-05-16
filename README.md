@@ -57,10 +57,14 @@ Example
 -------
 ```{r}
 <<<<<<< HEAD
+<<<<<<< HEAD
 require(pbo)
 =======
 require(lattice) # for plots
 >>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
+=======
+require(pbo)
+>>>>>>> FETCH_HEAD
 require(PerformanceAnalytics) # for Omega ratio
 
 N <- 200                 # studies, alternative configurations
@@ -73,6 +77,9 @@ for ( i in 1:N ) M[,i] <- rt(T,10) / 100
 
 # compute and plot
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> FETCH_HEAD
 my_pbo = pbo(M,S,ep=Omega,threshold=1)
 pbo_logit(my_pbo)
 pbo_degradation(my_pbo)

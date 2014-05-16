@@ -48,6 +48,9 @@ for ( i in 1:N ) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> FETCH_HEAD
 mypbo <- pbo(M,S,sharpe,0)
 pbo_logit(mypbo)
 pbo_degradation(mypbo)
@@ -58,6 +61,7 @@ pbo_performance_ranks(mypbo)
 pbo_performance_pairs(mypbo)
 pbo_performance_cases(mypbo,N/2)
 
+<<<<<<< HEAD
 =======
 ##### parallel
 require(doParallel)
@@ -66,6 +70,8 @@ registerDoParallel(cluster)
 p_pbo <- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
 stopCluster(cluster)
 >>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
+=======
+>>>>>>> FETCH_HEAD
 
 ##### test setup TC2 high overfit
 sr_case <- 1
