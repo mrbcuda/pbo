@@ -2,22 +2,13 @@
 #' Perform probability of backtest overfitting computation via CSCV.
 #' @param M a \eqn{TxN} data frame of returns, where \eqn{T} is the samples per study and \eqn{N} is the number of studies.
 #' @param S the number of subsets of \eqn{M} for CSCV combinations; must evenly divide \eqn{M} 
-#' @param ep the function to evaluate a study's performance; required
+#' @param F the function to evaluate a study's performance; required
 #' @param threshold the performance metric threshold (e.g. 0 for Sharpe, 1 for Omega)
 #' @param inf_sub infinity substitution value for reasonable plotting
-<<<<<<< HEAD
-#' @return list of PBO calculation results and settings
-pbo <- function(M,S=4,ep=NA,threshold=0,inf_sub=6) {
-  stopifnot(is.function(ep))
-<<<<<<< HEAD
-=======
 #' @param allow_parallel whether to enable parallel processing, default FALSE
 #' @return object of class 'pbo' containing list of PBO calculation results and settings
 pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
   stopifnot(is.function(F))
->>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
-=======
->>>>>>> FETCH_HEAD
   require(utils,quietly=TRUE)
   
   T <- nrow(M)             # samples per study
@@ -51,21 +42,9 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     J_bar <- M[os_indices,]
     
     # compute performance over the N strategies in each subset
-<<<<<<< HEAD
-<<<<<<< HEAD
-    # could use for ep any summary statistic e.g. SharpeRatio or Omega
-    R <- ep(J) # mapply(ep,J)  
-    R_bar <- ep(J_bar) # mapply(ep,J_bar) 
-=======
     # could use for R any summary statistic e.g. SharpeRatio or Omega
     R <- mapply(F,J)
     R_bar <- mapply(F,J_bar)
->>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
-=======
-    # could use for ep any summary statistic e.g. SharpeRatio or Omega
-    R <- ep(J) # mapply(ep,J)  
-    R_bar <- ep(J_bar) # mapply(ep,J_bar) 
->>>>>>> FETCH_HEAD
     
     # compute n* by argmax over R vector
     n_star <- which.max(R)
@@ -135,7 +114,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     lambda=lambda,
     phi=phi,
     rn_pairs=rn_pairs,
-    func=as.character(substitute(ep)),
+    func=as.character(substitute(F)),
     slope=m,
     intercept=b,
     ar2=ar2,

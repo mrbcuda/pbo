@@ -13,20 +13,11 @@ based on the approach specified in Bailey et al., September 2013.
 A package to compute probability of backtest overfitting measures.
 }
 \examples{
-<<<<<<< HEAD
-<<<<<<< HEAD
 \dontrun{
-library(pbo)
-library(PerformanceAnalytics) # for Omega ratio
-=======
 require(lattice) # for plots
-require(PerformanceAnalytics) # for Omega ratio
->>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
-=======
-\dontrun{
 library(pbo)
 library(PerformanceAnalytics) # for Omega ratio
->>>>>>> FETCH_HEAD
+
 N <- 100
 T <- 1000
 S <- 8
@@ -42,25 +33,11 @@ for ( i in 1:N ) {
   M[,i] = M[,i] + mu_base - mean(M[,i]) # re-center
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> FETCH_HEAD
-my_pbo <- pbo(M,S,ep=Omega)
-pbo_logit(my_pbo)
-pbo_degradation(my_pbo)
-pbo_dominance(my_pbo)
-pbo_performance_dot(my_pbo,show_grid=TRUE)
-}
-<<<<<<< HEAD
-=======
 my_pbo <- pbo(M,S=8,F=Omega)
 histogram(my_pbo)
 xyplot(my_pbo,plotType="degradation")
 xyplot(my_pbo,plotType="dominance")
->>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
-=======
->>>>>>> FETCH_HEAD
+}
 }
 \author{
 Matt Barry \email{mrb@softisms.com}
