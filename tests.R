@@ -30,6 +30,13 @@ for ( i in 1:N ) {
   M[,i] = M[,i] + mu_base - mean(M[,i]) # re-center
 }
 
+##### parallel
+require(doParallel)
+cluster <- makeCluster(detectCores())
+registerDoParallel(cluster)
+p_pbo <- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
+stopCluster(cluster)
+
 ##### test setup TC2 high overfit
 sr_case = 1
 mu_case = sr_case/(260.0)

@@ -3,6 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
 
 <title>Probability of Backtest Overfitting</title>
 
@@ -234,7 +235,8 @@ install_github(&#39;pbo&#39;,username=&#39;mrbcuda&#39;)
 
 <h2>Example</h2>
 
-<pre><code class="r">require(PerformanceAnalytics) # for Omega ratio
+<pre><code class="r">require(lattice) # for plots
+require(PerformanceAnalytics) # for Omega ratio
 
 N &lt;- 200                 # studies, alternative configurations
 T &lt;- 3200                # sample returns
@@ -245,15 +247,56 @@ M &lt;- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),check.names=
 for ( i in 1:N ) M[,i] &lt;- rt(T,10) / 100
 
 # compute and plot
-my_pbo = pbo(M,S,F=Omega,threshold=1)
-pbo_logit(my_pbo)
-pbo_degradation(my_pbo)
-pbo_dominance(my_pbo)
-pbo_performance_dot(mypbo,pch=15,col=2,cex=1.5)
-pbo_performance_xy(mypbo)
-pbo_performance_pairs(mypbo,cex=1.5,osr_threshold=30)
-pbo_performance_cases(mypbo,cex=1.5)
-pbo_performance_ranks(mypbo,pch=16,cex=1.5)
+my_pbo &lt;- pbo(M,S,F=Omega,threshold=1)
+histogram(my_pbo)
+dotplot(my_pbo,pch=15,col=2,cex=1.5)
+xyplot(my_pbo,plotType=&quot;cscv&quot;,cex=0.8,show_rug=FALSE,osr_threshold=100)
+xyplot(my_pbo,plotType=&quot;degradation&quot;)
+xyplot(my_pbo,plotType=&quot;dominance&quot;,lwd=2)
+xyplot(my_pbo,plotType=&quot;pairs&quot;,cex=1.1,osr_threshold=75)
+xyplot(my_pbo,plotType=&quot;ranks&quot;,pch=16,cex=1.2)
+xyplot(my_pbo,plotType=&quot;selection&quot;,sel_threshold=100,cex=1.2)
+</code></pre>
+
+<h2>Example with Parallel Processing</h2>
+
+<pre><code class="r">require(lattice)
+require(PerformanceAnalytics)
+require(doParallel)      # for parallel processing
+
+N = 200
+T = 2000
+S = 16
+
+# create some phony trial data
+sr_base = 0
+mu_base = sr_base/(260.0)
+sigma_base = 1.00/(260.0)**0.5
+
+M &lt;- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),
+                check.names=FALSE)
+
+M[,1:N] &lt;- rnorm(T,mean=0,sd=1)
+x &lt;- sapply(1:N,function(i) {
+            M[,i] = M[,i] * sigma_base / sd(M[,i])
+            M[,i] = M[,i] + mu_base - mean(M[,i])
+            })
+
+# tweak one trial to exhibit low overfit
+sr_case = 2
+mu_case = 1
+sigma_case = sigma_base
+
+i = N
+M[,i] &lt;- rnorm(T,mean=0,sd=1)
+M[,i] = M[,i] * sigma_case / sd(M[,i]) # re-scale
+M[,i] = M[,i] + mu_case - mean(M[,i]) # re-center
+
+cluster &lt;- makeCluster(detectCores())
+registerDoParallel(cluster)
+pp_pbo &lt;- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
+stopCluster(cluster)
+histogram(pp_pbo)
 </code></pre>
 
 <h2>Packages</h2>
@@ -262,6 +305,8 @@ pbo_performance_ranks(mypbo,pch=16,cex=1.5)
 <li><code>utils</code> for the combinations</li>
 <li><code>lattice</code> for plots</li>
 <li><code>latticeExtra</code> over plot overlays only for the SD2 measure</li>
+<li><code>grid</code> for plot labeling</li>
+<li><code>foreach</code> for parallel computation of the backtest folds</li>
 </ul>
 
 <h2>Reference</h2>

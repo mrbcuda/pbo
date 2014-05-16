@@ -13,6 +13,7 @@
 #' \url{http://dx.doi.org/10.2139/ssrn.2326253}.
 #' @keywords package
 #' @examples
+#' require(lattice) # for plots
 #' require(PerformanceAnalytics) # for Omega ratio
 #' N <- 100
 #' T <- 1000
@@ -30,8 +31,8 @@
 #' }
 #' 
 #' my_pbo <- pbo(M,S=8,F=Omega)
-#' pbo_logit(my_pbo)
-#' pbo_degradation(my_pbo)
-#' pbo_dominance(my_pbo)
+#' histogram(my_pbo)
+#' xyplot(my_pbo,plotType="degradation")
+#' xyplot(my_pbo,plotType="dominance")
 #' 
 NA

@@ -59,6 +59,7 @@ install_github('pbo',username='mrbcuda')
 Example
 -------
 ```{r}
+require(lattice) # for plots
 require(PerformanceAnalytics) # for Omega ratio
 
 N <- 200                 # studies, alternative configurations
@@ -70,15 +71,57 @@ M <- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),check.names=FAL
 for ( i in 1:N ) M[,i] <- rt(T,10) / 100
 
 # compute and plot
-my_pbo = pbo(M,S,F=Omega,threshold=1)
-pbo_logit(my_pbo)
-pbo_degradation(my_pbo)
-pbo_dominance(my_pbo)
-pbo_performance_dot(mypbo,pch=15,col=2,cex=1.5)
-pbo_performance_xy(mypbo)
-pbo_performance_pairs(mypbo,cex=1.5,osr_threshold=30)
-pbo_performance_cases(mypbo,cex=1.5)
-pbo_performance_ranks(mypbo,pch=16,cex=1.5)
+my_pbo <- pbo(M,S,F=Omega,threshold=1)
+histogram(my_pbo)
+dotplot(my_pbo,pch=15,col=2,cex=1.5)
+xyplot(my_pbo,plotType="cscv",cex=0.8,show_rug=FALSE,osr_threshold=100)
+xyplot(my_pbo,plotType="degradation")
+xyplot(my_pbo,plotType="dominance",lwd=2)
+xyplot(my_pbo,plotType="pairs",cex=1.1,osr_threshold=75)
+xyplot(my_pbo,plotType="ranks",pch=16,cex=1.2)
+xyplot(my_pbo,plotType="selection",sel_threshold=100,cex=1.2)
+```
+
+Example with Parallel Processing
+--------------------------------
+```{r}
+require(lattice)
+require(PerformanceAnalytics)
+require(doParallel)      # for parallel processing
+
+N = 200
+T = 2000
+S = 16
+
+# create some phony trial data
+sr_base = 0
+mu_base = sr_base/(260.0)
+sigma_base = 1.00/(260.0)**0.5
+
+M <- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),
+                check.names=FALSE)
+
+M[,1:N] <- rnorm(T,mean=0,sd=1)
+x <- sapply(1:N,function(i) {
+            M[,i] = M[,i] * sigma_base / sd(M[,i])
+            M[,i] = M[,i] + mu_base - mean(M[,i])
+            })
+
+# tweak one trial to exhibit low overfit
+sr_case = 1
+mu_case = sr_case/(260.0)
+sigma_case = sigma_base
+
+i = N
+M[,i] <- rnorm(T,mean=0,sd=1)
+M[,i] = M[,i] * sigma_case / sd(M[,i]) # re-scale
+M[,i] = M[,i] + mu_case - mean(M[,i]) # re-center
+
+cluster <- makeCluster(detectCores())
+registerDoParallel(cluster)
+pp_pbo <- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
+stopCluster(cluster)
+histogram(pp_pbo)
 ```
 
 Packages
@@ -86,6 +129,8 @@ Packages
 * `utils` for the combinations
 * `lattice` for plots
 * `latticeExtra` over plot overlays only for the SD2 measure
+* `grid` for plot labeling
+* `foreach` for parallel computation of the backtest folds
 
 Reference
 ---------

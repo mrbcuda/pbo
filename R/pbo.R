@@ -5,8 +5,9 @@
 #' @param F the function to evaluate a study's performance; required
 #' @param threshold the performance metric threshold (e.g. 0 for Sharpe, 1 for Omega)
 #' @param inf_sub infinity substitution value for reasonable plotting
-#' @return list of PBO calculation results and settings
-pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
+#' @param allow_parallel whether to enable parallel processing, default FALSE
+#' @return object of class 'pbo' containing list of PBO calculation results and settings
+pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
   stopifnot(is.function(F))
   require(utils,quietly=TRUE)
   
@@ -19,9 +20,8 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
   # initialize results lists
   cs_results <- list()
   
-  # for each partition combination
-  for ( cs in 1:ncol(CS) ) {
-    
+  # a worker iteration function for a single case
+  cs_compute <- function(cs) {
     # partition indices
     IS_I <- CS[,cs]
     
@@ -43,8 +43,8 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
     
     # compute performance over the N strategies in each subset
     # could use for R any summary statistic e.g. SharpeRatio or Omega
-    R <- mapply(F,J) # mapply(sharpe,J) 
-    R_bar <- mapply(F,J_bar) # mapply(sharpe,J_bar)
+    R <- mapply(F,J) 
+    R_bar <- mapply(F,J_bar)
     
     # compute n* by argmax over R vector
     n_star <- which.max(R)
@@ -58,8 +58,21 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
     # note the value can be Inf
     lambda_c <- log(omega_bar_c / (1 - omega_bar_c))
     
-    # save the results
-    cs_results <- rbind(cs_results,list(R,R_bar,n_star,n_max_oos,os_rank,omega_bar_c,lambda_c))
+    list(R,R_bar,n_star,n_max_oos,os_rank,omega_bar_c,lambda_c)
+  }
+  
+  # for each partition combination
+  cs_results <- NULL
+  if ( allow_parallel ) {
+    require(foreach,quietly=TRUE)
+    cs_results <- foreach ( cs=1:ncol(CS),
+                .combine=rbind,
+                .multicombine=TRUE) %dopar% 
+      cs_compute(cs)
+  } else {
+    for ( cs in 1:ncol(CS) ) {
+      cs_results <- rbind(cs_results,cs_compute(cs))
+    }
   }
   
   colnames(cs_results) <- c("R","R_bar","n*","n_max_oos","os_rank","omega_bar","lambda")
@@ -95,7 +108,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
   # probability out-of-sample below threshold
   p_oos_bt <- signif(length(which(rn_pairs$Rbn<threshold)) / 
                        nrow(rn_pairs),digits=3)
-  return(list(
+  rv = list(
     results=cs_results,
     combos=CS,
     lambda=lambda,
@@ -108,5 +121,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6) {
     threshold=threshold,
     below_threshold=p_oos_bt,
     test_config=test_config,
-    inf_sub=inf_sub))
+    inf_sub=inf_sub)
+  class(rv) <- "pbo"
+  rv
 }
