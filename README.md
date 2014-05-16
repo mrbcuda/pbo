@@ -7,45 +7,42 @@ Implements in R some of the ideas found in the Bailey et al. paper identified be
 
 The reference authors used the Sharpe ratio as the performance measure.  Other measures are suitable according to the assumptions laid out in the paper.
 
-Example plots attached below.  The first four illustrate a test with low overfitting (T-distribution, N=100, T=1600, S=8). The second four illustrate a test from the reference paper with high overfitting (normal distribution, N=100, T=1000, S=8).  The third four illustrate some study selection performance plots.  
+Example plots attached below.  The first four illustrate a test with low overfitting (T-distribution, N=100, T=1600, S=8). The second four illustrate a test from the reference paper with high overfitting (normal distribution, N=100, T=1000, S=8).  The third batch illustrate some study selection performance plots for both cases.  
 
 Example test case, low overfitting:
 
-![plot1](figures/plot1.png)
-![plot2](figures/plot2.png)
-![plot3](figures/plot3.png)
-![plot4](figures/plot4.png)
+![plot1](figures/low1.png)
+![plot2](figures/low2.png)
+![plot3](figures/low3.png)
+
 
 Reference test case 1, high overfitting:
 
-![plot1](figures/tc1_1.png)
-![plot2](figures/tc1_2.png)
-![plot3](figures/tc1_3.png)
-![plot4](figures/tc1_4.png)
+![plot1](figures/high1.png)
+![plot2](figures/high2.png)
+![plot3](figures/high3.png)
 
-Example study selection performance:
+Example study selection performance for the low and high cases:
 
-![plot1](figures/perf11.png)
-![plot2](figures/perf12.png)
-![plot3](figures/perf13.png)
-![plot4](figures/perf14.png)
+![low5](figures/low5.png)
+![low6](figures/low6.png)
+![low7](figures/low7.png)
 
-More examples with a larger number of combinations on the same high- and low-overfitting test cases.  There are 12,780 CSCV combinations with the these tests (normal distribution, N=200, T=2000, S=16).  
+![high4](figures/high4.png)
+![high5](figures/high5.png)
+![high6](figures/high6.png)
+![high7](figures/high7.png)
 
-![plot1](figures/perf21.png)
-![plot2](figures/perf22.png)
-![plot3](figures/perf23.png)
-![plot4](figures/perf24.png)
 
-For the low-overfitting case with a seeded good study at N=200, the plots produce:
+More examples with a larger number of combinations on the same high- and low-overfitting test cases.  There are 12,780 CSCV combinations with the these tests (normal distribution, N=200, T=2000, S=16, Omega ratio performance).  
 
-![plot1](figures/plot41.png)
-![plot2](figures/plot42.png)
-![plot3](figures/plot43.png)
-![plot4](figures/plot44.png)
-![plot5](figures/plot45.png)
-![plot6](figures/plot46.png)
-![plot7](figures/plot47.png)
+<img src="figures/large_high1.png" alt="lh1" style="width: 590px;"/>
+<img src="figures/large_high2.png" alt="lh2" style="width: 590px;"/>
+<img src="figures/large_high3.png" alt="lh3" style="width: 590px;"/>
+<img src="figures/large_high4.png" alt="lh4" style="width: 590px;"/>
+<img src="figures/large_high5.png" alt="lh5" style="width: 590px;"/>
+<img src="figures/large_high6.png" alt="lh6" style="width: 590px;"/>
+<img src="figures/large_high7.png" alt="lh7" style="width: 590px;"/>
 
 
 
@@ -59,7 +56,11 @@ install_github('pbo',username='mrbcuda')
 Example
 -------
 ```{r}
+<<<<<<< HEAD
+require(pbo)
+=======
 require(lattice) # for plots
+>>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
 require(PerformanceAnalytics) # for Omega ratio
 
 N <- 200                 # studies, alternative configurations
@@ -71,6 +72,17 @@ M <- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),check.names=FAL
 for ( i in 1:N ) M[,i] <- rt(T,10) / 100
 
 # compute and plot
+<<<<<<< HEAD
+my_pbo = pbo(M,S,ep=Omega,threshold=1)
+pbo_logit(my_pbo)
+pbo_degradation(my_pbo)
+pbo_dominance(my_pbo)
+pbo_performance_dot(mypbo,pch=15,col=2,cex=1.5)
+pbo_performance_xy(mypbo)
+pbo_performance_pairs(mypbo,cex=1.5,osr_threshold=30)
+pbo_performance_cases(mypbo,cex=1.5)
+pbo_performance_ranks(mypbo,pch=16,cex=1.5)
+=======
 my_pbo <- pbo(M,S,F=Omega,threshold=1)
 histogram(my_pbo)
 dotplot(my_pbo,pch=15,col=2,cex=1.5)
@@ -122,6 +134,7 @@ registerDoParallel(cluster)
 pp_pbo <- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
 stopCluster(cluster)
 histogram(pp_pbo)
+>>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
 ```
 
 Packages

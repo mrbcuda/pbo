@@ -29,12 +29,12 @@ histogram.pbo <- function(p,
                           show_config=TRUE,
                           col_bar="#cc99cc",
                           col_line="#3366cc",
-                          ...) 
+                          ...)
 {
   # advise ignoring data
   if (!is.null(match.call()$data))
     warning("explicit 'data' specification ignored; using 'pbo' object")
-  
+
   # plot rank logit with PBO annotation
   histogram(p$lambda,
             xlim=c(-p$inf_sub,p$inf_sub),
@@ -45,31 +45,31 @@ histogram.pbo <- function(p,
               panel.abline(v=0,lty=3,...)
               if (show_pbo) {
                 require(grid,quietly=TRUE)
-                xa <- unit(0, "npc") + unit(2, "mm") 
-                ya <- unit(1, "npc") - unit(3, "mm") 
-                grid.text(label = bquote(PBO == .(round(p$phi,digits=3))), 
-                          x = xa, 
-                          y = ya, 
-                          just = "left") 
+                xa <- unit(0, "npc") + unit(2, "mm")
+                ya <- unit(1, "npc") - unit(3, "mm")
+                grid.text(label = bquote(PBO == .(round(p$phi,digits=3))),
+                          x = xa,
+                          y = ya,
+                          just = "left")
               }
-              if (show_config) 
+              if (show_config)
                 pbo_show_config(p)
               if (show_regions) {
                 require(grid,quietly=TRUE)
-                ya <- unit(1, "npc") - unit(3, "mm") 
+                ya <- unit(1, "npc") - unit(3, "mm")
                 grid.text(label = "Less overfit",
-                          x = unit(0.5,"npc") + unit(2,"mm"), 
+                          x = unit(0.5,"npc") + unit(2,"mm"),
                           y=ya,
                           just="left")
                 grid.text(label = "More overfit",
-                          x = unit(0.5,"npc") - unit(2,"mm"), 
+                          x = unit(0.5,"npc") - unit(2,"mm"),
                           y=ya,
                           just="right")
               }
             },
             ...
   )
-  
+
 }
 
 #' Draws an annotated dot plot of study selection sorted by in-sample selection frequency.
@@ -95,15 +95,15 @@ dotplot.pbo <- function(p,
   # advise ignoring data
   if (!is.null(match.call()$data))
     warning("explicit 'data' specification ignored; using 'pbo' object")
-  
+
   x <- p$results
   ns <- as.integer(x[,'n*']) # n_star result in-sample
   tns <- data.frame(table(ns)) # for frequency counts
   tns$ns <- reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
-  
+
   if (missing(main))
     main=paste("IS Study Selection (Frequency > ",sel_threshold,")",sep='')
-  
+
   dotplot(Freq ~ ns,
           data=tns,
           subset=Freq>sel_threshold,
@@ -170,20 +170,20 @@ xyplot.pbo <- function(p,
                        col_sd1="#3366cc",
                        col_sd2="#339999",
                        lty_sd=c(1,2,4),
-                       ...) 
+                       ...)
 {
   # confirm plot type specified
   ptypes = c('cscv','degradation','dominance','pairs','ranks','selection')
   if ( ! plotType %in% ptypes )
     stop(paste("xyplot argument 'plotType' must be one of",toString(ptypes)))
-  
+
   # advise ignoring data
   if (!is.null(match.call()$data))
     warning("explicit 'data' specification ignored; using 'pbo' object")
-  
+
   # cscv plot
   if (plotType == "cscv") {
-    
+
     if (missing(xlab))
       xlab='CSCV Case'
     if (missing(ylab))
@@ -193,14 +193,14 @@ xyplot.pbo <- function(p,
                         .(osr_threshold),
                         ')',
                         sep='' ))
-    
+
     x <- p$results
     y <- data.frame(cbind(nis=as.numeric(x[,'n*']),
                           noos=as.numeric(x[,'n_max_oos']),
                           osr=as.numeric(x[,'os_rank'])))
-    
-    rv = xyplot(noos + nis ~ 1:nrow(y), 
-                data=y, 
+
+    rv = xyplot(noos + nis ~ 1:nrow(y),
+                data=y,
                 subset=osr>osr_threshold,
                 main=main,
                 xlab=xlab,
@@ -223,11 +223,11 @@ xyplot.pbo <- function(p,
                 ...
     )
   }
-  
-  
+
+
   # performance degradation plot
   if (plotType == "degradation") {
-    
+
     if (missing(main))
       main="OOS Performance Degradation"
     if (missing(xlab))
@@ -238,11 +238,11 @@ xyplot.pbo <- function(p,
       col_bar="#cc99cc"
     if (missing(col_line))
       col_line="#3366cc"
-    
+
     # plot Rn pairs
     cloud_span <- c(signif(min(p$rn_pairs),-3),
                     signif(max(p$rn_pairs),3)) # axis range
-    
+
     rv = xyplot(p$rn_pairs$Rbn ~ p$rn_pairs$Rn,
                 main = main,
                 xlab = xlab,
@@ -254,33 +254,33 @@ xyplot.pbo <- function(p,
                   panel.xyplot(x,col=col_bar,...)
                   panel.lmline(x,col=col_line,...)
                   panel.abline(v=p$threshold,type="l",lty=3)
-                  panel.abline(h=p$threshold,type="l",lty=3)    
+                  panel.abline(h=p$threshold,type="l",lty=3)
                   if ( show_rug ) {
                     panel.rug(x,col=col_bar,...)
                   }
-                  ya <- unit(1, "npc") - unit(3, "mm") 
+                  ya <- unit(1, "npc") - unit(3, "mm")
                   if ( show_eqn ) {
                     require(grid,quietly=TRUE)
-                    grid.text(label = bquote(R_OOS == .(p$intercept) (R_IS) + .(p$slope) + err ~~ AdjR^2 == .(p$ar2)), 
-                              x = unit(0, "npc") + unit(3, "mm"), 
-                              y = ya, 
+                    grid.text(label = bquote(R_OOS == .(p$intercept) (R_IS) + .(p$slope) + err ~~ AdjR^2 == .(p$ar2)),
+                              x = unit(0, "npc") + unit(3, "mm"),
+                              y = ya,
                               just = "left",
                               gp=gpar(col=col_line))
                   }
-                  if (show_config) 
+                  if (show_config)
                     pbo_show_config(p)
                   if (show_threshold) {
                     require(grid,quietly=TRUE)
                     if ( p$threshold == 1 ) { # ugly but ifelse won't work on bquote
                       grid.text(label = bquote(P(R_OOS<1) ==  .(p$below_threshold)),
-                                x = unit(1, "npc") - unit(3, "mm"), 
-                                y = ya - unit(10,"mm"), 
+                                x = unit(1, "npc") - unit(3, "mm"),
+                                y = ya - unit(10,"mm"),
                                 just = "right",
-                                gp=gpar(col=col_bar)) 
+                                gp=gpar(col=col_bar))
                     } else {
                       grid.text(label = bquote(P(R_OOS<0) ==  .(p$below_threshold)),
-                                x = unit(1, "npc") - unit(3, "mm"), 
-                                y = ya - unit(10,"mm"), 
+                                x = unit(1, "npc") - unit(3, "mm"),
+                                y = ya - unit(10,"mm"),
                                 just = "right",
                                 gp=gpar(col=col_bar))
                     }
@@ -289,20 +289,20 @@ xyplot.pbo <- function(p,
                 ...
     )
   }
-  
+
   # stochastic dominance plot
   if ( plotType == "dominance") {
     require(latticeExtra,quietly=TRUE)
-    
+
     if (missing(main))
       main="Stochastic Dominance"
     if (missing(ylab_left))
       ylab_left="Frequency"
     if (missing(ylab_right))
       ylab_right="2nd Ord. Stochastic Dominance"
-    
+
     # uses n* items from R-bar for one line, and all n items from R-bar for the other line
-    # create cumulative distribution functions for each data set, 
+    # create cumulative distribution functions for each data set,
     # then generate samples to plot
     y <- seq(min(p$rn_pairs$Rbn),
              max(p$rn_pairs$Rbn),
@@ -311,9 +311,9 @@ xyplot.pbo <- function(p,
     erb <- ecdf(sapply(1:ncol(p$combos),
                        function(i) p$results[[i,2]])) # non-optimized (all)
     sorted <- data.frame(cbind(sort(erbn(y)),sort(erb(y))))
-    sorted$sd2 <- sorted$X2 - sorted$X1 
+    sorted$sd2 <- sorted$X2 - sorted$X1
     colnames(sorted) <- c("Rbn","Rb","SD2")
-    
+
     # trellis.par.set(plot.line$col",c("blue","purple","green"))
     #theme = trellis.par.get()
     #trellis.par.set(superpose.line=list(lty=c(1,2,4),
@@ -321,8 +321,8 @@ xyplot.pbo <- function(p,
     #                ylab.text = list(col=c("black"))
     #)
     colors = c(col_sd1,col_sd1,col_sd2)
-    
-    x1 = xyplot(Rbn + Rb ~ y, 
+
+    x1 = xyplot(Rbn + Rb ~ y,
                 data = sorted,
                 type="l",
                 lty=lty_sd,
@@ -337,28 +337,28 @@ xyplot.pbo <- function(p,
                                     lwd=lwd),
                          text=list(names=c("Optimized (L)","Non-Optimized (L)","SD2 (R)"))
                 ),
-                
+
                 panel = function(x, ...){
                   panel.xyplot(x,...)
                   panel.abline(v=p$threshold,type="l",lty=3)
-                  if (show_grid) 
+                  if (show_grid)
                     panel.grid(-1,-1)
                   if (show_prob) {
-                    grid.text(label = expression(paste(italic(Prob), 
+                    grid.text(label = expression(paste(italic(Prob),
                                                        group("[",bar(R)[n^textstyle("*")] >= x,"]"),
                                                        " > ",
                                                        italic(Prob),
-                                                       group("[",bar(R) >= x,"]"))), 
-                              x = unit(0, "npc") + unit(3, "mm"), 
-                              y = unit(0, "npc") + unit(3, "mm"), 
+                                                       group("[",bar(R) >= x,"]"))),
+                              x = unit(0, "npc") + unit(3, "mm"),
+                              y = unit(0, "npc") + unit(3, "mm"),
                               just = "left"
                     )
                   }
-                  if (show_config) 
+                  if (show_config)
                     pbo_show_config(p)
                 },
                 ...
-    ) 
+    )
     x2 = xyplot(SD2 ~ y,
                 data=sorted,
                 type="l",
@@ -369,9 +369,9 @@ xyplot.pbo <- function(p,
                 panel = function(x, ...){
                   panel.xyplot(x,...)
                   panel.abline(h=0,type="l",lty=3)
-                  grid.text(label = expression(italic(SD2) >= 0), 
-                            x = unit(1, "npc") - unit(3, "mm"), 
-                            y = unit(0, "npc") + unit(3, "mm"), 
+                  grid.text(label = expression(italic(SD2) >= 0),
+                            x = unit(1, "npc") - unit(3, "mm"),
+                            y = unit(0, "npc") + unit(3, "mm"),
                             just = "right"
                   )
                 },
@@ -383,10 +383,10 @@ xyplot.pbo <- function(p,
                       use.style=FALSE
     )
   }
-  
-  
+
+
   if (plotType == "pairs") {
-    
+
     if (missing(xlab))
       xlab='IS Selection (N)'
     if (missing(ylab))
@@ -396,14 +396,14 @@ xyplot.pbo <- function(p,
                          .(osr_threshold),
                          ')',
                          sep='' ))
-    
+
     x <- p$results
     y <- data.frame(cbind(nis=as.numeric(x[,'n*']),
                           noos=as.numeric(x[,'n_max_oos']),
                           osr=as.numeric(x[,'os_rank'])))
-    
-    rv = xyplot(noos ~ nis, 
-                data=y, 
+
+    rv = xyplot(noos ~ nis,
+                data=y,
                 subset=osr>osr_threshold,
                 xlab=xlab,
                 ylab=ylab,
@@ -419,12 +419,12 @@ xyplot.pbo <- function(p,
                     pbo_show_config(p)
                 },
                 ...
-    )  
+    )
   }
-  
-  
+
+
   if (plotType == "ranks") {
-    
+
     if (missing(xlab))
       xlab='Selected IS Study (N)'
     if (missing(ylab))
@@ -434,13 +434,13 @@ xyplot.pbo <- function(p,
                         .(osr_threshold),
                         ')',
                         sep='' ))
-    
+
     x <- p$results
     y <- data.frame(cbind(nis=as.numeric(x[,'n*']),
                           noos=as.numeric(x[,'n_max_oos']),
                           osr=as.numeric(x[,'os_rank'])))
-    
-    rv = xyplot(osr ~ nis, 
+
+    rv = xyplot(osr ~ nis,
                 data=y,
                 subset=osr>osr_threshold,
                 xlab=xlab,
@@ -454,15 +454,15 @@ xyplot.pbo <- function(p,
                     panel.grid(-1,-1,...)
                   if ( show_rug )
                     panel.rug(x,...)
-                  if (show_config) 
+                  if (show_config)
                     pbo_show_config(p)
                 },
                 ...
     )
   }
-  
+
   if ( plotType == "selection") {
-    
+
     if (missing(xlab))
       xlab="Sorted Study Number (N)"
     if (missing(ylab))
@@ -472,12 +472,12 @@ xyplot.pbo <- function(p,
                          .(sel_threshold),
                          ')',
                          sep='' ))
-    
+
     x <- p$results
     ns <- as.integer(x[,'n*']) # n_star result in-sample
     tns <- data.frame(table(ns)) # for frequency counts
     tns$ns <- reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
-    
+
     rv = xyplot(Freq ~ ns,
                 data=tns,
                 subset=Freq>sel_threshold,
@@ -491,14 +491,13 @@ xyplot.pbo <- function(p,
                     panel.grid(-1,-1,...)
                   if (show_rug)
                     panel.rug(x=NULL,...) # show only y-axis rug
-                  if (show_config) 
+                  if (show_config)
                     pbo_show_config(p)
                 },
                 ...
     )
   }
-  
+
   # returns the plot, flushing the graphics
   rv
 }
-

@@ -16,4 +16,3 @@ Defunct - draws an annotated histogram of rank logits.
 \seealso{
 'histogram.pbo'
 }
-

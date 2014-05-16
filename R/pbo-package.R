@@ -13,8 +13,14 @@
 #' \url{http://dx.doi.org/10.2139/ssrn.2326253}.
 #' @keywords package
 #' @examples
+<<<<<<< HEAD
+#' \dontrun{
+#' library(pbo)
+#' library(PerformanceAnalytics) # for Omega ratio
+=======
 #' require(lattice) # for plots
 #' require(PerformanceAnalytics) # for Omega ratio
+>>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
 #' N <- 100
 #' T <- 1000
 #' S <- 8
@@ -30,9 +36,18 @@
 #'   M[,i] = M[,i] + mu_base - mean(M[,i]) # re-center
 #' }
 #' 
+<<<<<<< HEAD
+#' my_pbo <- pbo(M,S,ep=Omega)
+#' pbo_logit(my_pbo)
+#' pbo_degradation(my_pbo)
+#' pbo_dominance(my_pbo)
+#' pbo_performance_dot(my_pbo,show_grid=TRUE)
+#' }
+=======
 #' my_pbo <- pbo(M,S=8,F=Omega)
 #' histogram(my_pbo)
 #' xyplot(my_pbo,plotType="degradation")
 #' xyplot(my_pbo,plotType="dominance")
+>>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
 #' 
 NA

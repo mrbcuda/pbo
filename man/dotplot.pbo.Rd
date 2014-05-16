@@ -29,4 +29,3 @@
 \description{
 Draws an annotated dot plot of study selection sorted by in-sample selection frequency.
 }
-

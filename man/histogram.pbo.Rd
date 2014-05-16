@@ -32,4 +32,3 @@ Uses histogram, density plot, and abline panels together with class-specific ann
 \seealso{
 pbo
 }
-

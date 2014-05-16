@@ -1,14 +1,20 @@
 
-#' PBO performs probability of backtest overfitting computation via CSCV.
+#' Perform probability of backtest overfitting computation via CSCV.
 #' @param M a \eqn{TxN} data frame of returns, where \eqn{T} is the samples per study and \eqn{N} is the number of studies.
 #' @param S the number of subsets of \eqn{M} for CSCV combinations; must evenly divide \eqn{M} 
-#' @param F the function to evaluate a study's performance; required
+#' @param ep the function to evaluate a study's performance; required
 #' @param threshold the performance metric threshold (e.g. 0 for Sharpe, 1 for Omega)
 #' @param inf_sub infinity substitution value for reasonable plotting
+<<<<<<< HEAD
+#' @return list of PBO calculation results and settings
+pbo <- function(M,S=4,ep=NA,threshold=0,inf_sub=6) {
+  stopifnot(is.function(ep))
+=======
 #' @param allow_parallel whether to enable parallel processing, default FALSE
 #' @return object of class 'pbo' containing list of PBO calculation results and settings
 pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
   stopifnot(is.function(F))
+>>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
   require(utils,quietly=TRUE)
   
   T <- nrow(M)             # samples per study
@@ -33,7 +39,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     }))
     
     # out-of-sample indices
-    os_indices <- which(1:T != is_indices)
+    os_indices <- setdiff(1:T,is_indices) 
     
     # training and test sets (in sample, out of sample)
     # choosing not to reassign row names of each to 1:(T/2)
@@ -42,9 +48,15 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     J_bar <- M[os_indices,]
     
     # compute performance over the N strategies in each subset
+<<<<<<< HEAD
+    # could use for ep any summary statistic e.g. SharpeRatio or Omega
+    R <- ep(J) # mapply(ep,J)  
+    R_bar <- ep(J_bar) # mapply(ep,J_bar) 
+=======
     # could use for R any summary statistic e.g. SharpeRatio or Omega
-    R <- mapply(F,J) 
+    R <- mapply(F,J)
     R_bar <- mapply(F,J_bar)
+>>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
     
     # compute n* by argmax over R vector
     n_star <- which.max(R)
@@ -60,14 +72,14 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     
     list(R,R_bar,n_star,n_max_oos,os_rank,omega_bar_c,lambda_c)
   }
-  
+
   # for each partition combination
   cs_results <- NULL
   if ( allow_parallel ) {
     require(foreach,quietly=TRUE)
     cs_results <- foreach ( cs=1:ncol(CS),
                 .combine=rbind,
-                .multicombine=TRUE) %dopar% 
+                .multicombine=TRUE) %dopar%
       cs_compute(cs)
   } else {
     for ( cs in 1:ncol(CS) ) {
@@ -114,7 +126,7 @@ pbo <- function(M,S=4,F=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     lambda=lambda,
     phi=phi,
     rn_pairs=rn_pairs,
-    func=as.character(substitute(F)),
+    func=as.character(substitute(ep)),
     slope=m,
     intercept=b,
     ar2=ar2,
