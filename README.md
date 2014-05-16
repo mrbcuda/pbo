@@ -56,15 +56,8 @@ install_github('pbo',username='mrbcuda')
 Example
 -------
 ```{r}
-<<<<<<< HEAD
-<<<<<<< HEAD
 require(pbo)
-=======
 require(lattice) # for plots
->>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
-=======
-require(pbo)
->>>>>>> FETCH_HEAD
 require(PerformanceAnalytics) # for Omega ratio
 
 N <- 200                 # studies, alternative configurations
@@ -76,20 +69,6 @@ M <- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),check.names=FAL
 for ( i in 1:N ) M[,i] <- rt(T,10) / 100
 
 # compute and plot
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> FETCH_HEAD
-my_pbo = pbo(M,S,ep=Omega,threshold=1)
-pbo_logit(my_pbo)
-pbo_degradation(my_pbo)
-pbo_dominance(my_pbo)
-pbo_performance_dot(mypbo,pch=15,col=2,cex=1.5)
-pbo_performance_xy(mypbo)
-pbo_performance_pairs(mypbo,cex=1.5,osr_threshold=30)
-pbo_performance_cases(mypbo,cex=1.5)
-pbo_performance_ranks(mypbo,pch=16,cex=1.5)
-=======
 my_pbo <- pbo(M,S,F=Omega,threshold=1)
 histogram(my_pbo)
 dotplot(my_pbo,pch=15,col=2,cex=1.5)
@@ -104,6 +83,7 @@ xyplot(my_pbo,plotType="selection",sel_threshold=100,cex=1.2)
 Example with Parallel Processing
 --------------------------------
 ```{r}
+require(pbo)
 require(lattice)
 require(PerformanceAnalytics)
 require(doParallel)      # for parallel processing
