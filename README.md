@@ -121,7 +121,6 @@ registerDoParallel(cluster)
 pp_pbo <- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
 stopCluster(cluster)
 histogram(pp_pbo)
->>>>>>> Reworked into class with lattice method extensions.  Added parallel computing support.
 ```
 
 Packages
