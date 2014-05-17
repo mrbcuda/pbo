@@ -51,7 +51,7 @@ for ( i in 1:N ) {
 require(doParallel)
 cluster <- makeCluster(detectCores())
 registerDoParallel(cluster)
-p_pbo <- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
+p_pbo <- pbo(M,S,f=Omega,threshold=1,allow_parallel=TRUE)
 stopCluster(cluster)
 
 ##### test setup TC2 high overfit
@@ -72,14 +72,7 @@ M[,i] <- M[,i] + mu_case - mean(M[,i]) # re-center
 
 # M <- scale(M) # scale and center
 mypbo <- pbo(M,S,sharpe,0)
-pbo_logit(mypbo)
-pbo_degradation(mypbo)
-pbo_dominance(mypbo)
-pbo_performance_dot(mypbo)
-pbo_performance_xy(mypbo)
-pbo_performance_ranks(mypbo)
-pbo_performance_pairs(mypbo,osr_threshold=N/2)
-pbo_performance_cases(mypbo,osr_threshold=N/2)
+
 
 
 
@@ -100,11 +93,5 @@ M[,i] <- M[,i] + mu_case - mean(M[,i]) # re-center
 
 # M <- scale(M) # scale and center
 mypbo <- pbo(M,S,sharpe,0)
-pbo_logit(mypbo)
-pbo_degradation(mypbo)
-pbo_dominance(mypbo)
-pbo_performance_dot(mypbo)
-pbo_performance_xy(mypbo)
-pbo_performance_ranks(mypbo,osr_threshold=N/2)
-pbo_performance_cases(mypbo,osr_threshold=N/2)
+
 

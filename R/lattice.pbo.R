@@ -1,9 +1,9 @@
 # lattice.pbo.R
 
-#' Writes grid text to a default location; meant for internal use only.
-#' @param p an object of class 'pbo' as returned by pbo()
+#' Writes grid text to a default predetermined location.
+#' @note Meant for internal use only.
+#' @param p an object of class \code{pbo} as returned by \code{\link[pbo]{pbo}}.
 pbo_show_config <- function(p) {
-  require(grid,quietly=TRUE)
   grid.text(label=p$test_config,
             x = unit(1,"npc") - unit(3,"mm"),
             y = unit(1,"npc") - unit(3,"mm"),
@@ -11,18 +11,27 @@ pbo_show_config <- function(p) {
 }
 
 
-#' Draws an annotated histogram of PBO rank logits.
-#' Uses histogram, density plot, and abline panels together with class-specific annotations.
-#' @param p an object of class 'pbo' as returned by pbo()
+#' @title PBO rank logits histogram.
+#' @description Draws an annotated histogram of PBO rank logits.
+#' @details Uses \pkg{lattice} function \code{\link[lattice]{histogram}}, 
+#' \code{\link[lattice]{densityplot}}, and
+#' \code{\link[lattice]{panel.abline}} panels together with 
+#' class-specific annotations.
+#' @param x an object of class \code{pbo} as returned by \code{\link[pbo]{pbo}}.
 #' @param data should not be used
-#' @param show_pbo whether to show the PBO value annotation, default TRUE
-#' @param show_regions whether to show the overfit region annotations, default TRUE
-#' @param show_config whether to show the study dimension annotations, default TRUE
+#' @param show_pbo whether to show the PBO value annotation, 
+#' default TRUE
+#' @param show_regions whether to show the overfit region annotations, 
+#' default TRUE
+#' @param show_config whether to show the study dimension annotations, 
+#' default TRUE
 #' @param col_bar histogram bar fill color passed to histogram panel
 #' @param col_line density plot line color passed to density plot panel
-#' @param ... other parameters passed to lattice 'histogram', 'densityplot' or 'abline'
+#' @param ... other parameters passed to \code{\link[lattice]{histogram}},
+#' \code{\link[lattice]{densityplot}}, or \code{\link[lattice]{panel.abline}}.
 #' @seealso pbo
-histogram.pbo <- function(p,
+#' @export
+histogram.pbo <- function(x,
                           data=NULL,
                           show_pbo=TRUE,
                           show_regions=TRUE,
@@ -35,6 +44,9 @@ histogram.pbo <- function(p,
   if (!is.null(match.call()$data))
     warning("explicit 'data' specification ignored; using 'pbo' object")
 
+  # class reference for use within panels
+  p <- x
+  
   # plot rank logit with PBO annotation
   histogram(p$lambda,
             xlim=c(-p$inf_sub,p$inf_sub),
@@ -44,7 +56,6 @@ histogram.pbo <- function(p,
               panel.densityplot(x, col=col_line, ...)
               panel.abline(v=0,lty=3,...)
               if (show_pbo) {
-                require(grid,quietly=TRUE)
                 xa <- unit(0, "npc") + unit(2, "mm")
                 ya <- unit(1, "npc") - unit(3, "mm")
                 grid.text(label = bquote(PBO == .(round(p$phi,digits=3))),
@@ -55,7 +66,6 @@ histogram.pbo <- function(p,
               if (show_config)
                 pbo_show_config(p)
               if (show_regions) {
-                require(grid,quietly=TRUE)
                 ya <- unit(1, "npc") - unit(3, "mm")
                 grid.text(label = "Less overfit",
                           x = unit(0.5,"npc") + unit(2,"mm"),
@@ -72,17 +82,26 @@ histogram.pbo <- function(p,
 
 }
 
-#' Draws an annotated dot plot of study selection sorted by in-sample selection frequency.
-#' @param p a 'pbo' object as returned by pbo()
+#' @title PBO in-sample selection dot plot.
+#' @description Draws an annotated dot plot of study selection sorted 
+#' by in-sample selection frequency.
+#' @param x a \code{pbo} object as returned by \code{\link[pbo]{pbo}}.
 #' @param data should not be used
-#' @param main plot title, default computed internally, passed to dotplot()
-#' @param xlab x-axis label with default, passed to dotplot()
-#' @param ylab y-axis label with default, passed to dotplot()
-#' @param show_config whether to show the study dimension annotations, default TRUE
+#' @param main plot title, default computed internally, 
+#' passed to \code{\link[lattice]{dotplot}}.
+#' @param xlab x-axis label with default, 
+#' passed to \code{\link[lattice]{dotplot}}.
+#' @param ylab y-axis label with default, 
+#' passed to \code{\link[lattice]{dotplot}}.
+#' @param show_config whether to show the study dimension annotations, 
+#' default TRUE
 #' @param show_grid whether to show the grid panel, default TRUE
-#' @param sel_threshold the minimum IS frequency subsetting threshold, default 50
-#' @param ... other parameters as passed to dotplot()
-dotplot.pbo <- function(p,
+#' @param sel_threshold the minimum in-sample frequency subsetting threshold,
+#' default 50; selection frequencies at or below this value will be omitted
+#' @param ... other parameters as passed to \code{\link[lattice]{dotplot}}.
+#' @keywords pbo backtest overfitting
+#' @export
+dotplot.pbo <- function(x,
                         data=NULL,
                         main,
                         xlab="Sorted Study Number (N)",
@@ -96,8 +115,10 @@ dotplot.pbo <- function(p,
   if (!is.null(match.call()$data))
     warning("explicit 'data' specification ignored; using 'pbo' object")
 
-  x <- p$results
-  ns <- as.integer(x[,'n*']) # n_star result in-sample
+  p <- x
+  # x <- p$results
+  Freq <- NULL # only to appease check
+  ns <- as.integer(x$results[,'n*']) # n_star result in-sample
   tns <- data.frame(table(ns)) # for frequency counts
   tns$ns <- reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
 
@@ -122,32 +143,59 @@ dotplot.pbo <- function(p,
 }
 
 
-#' Draws an annotated plot of performance degradation and probability of loss.
-#' @param p a 'pbo' object as returned by pbo()
+#' @title PBO xy-plots
+#' @description Draws an annotated plot of performance degradation and 
+#' probability of loss.
+#' @details Provides several variations of xy-plots suitable for presentation
+#' of PBO analysis results.  Use the \code{plotType} argument to indicate
+#' which variation or result to plot:
+#' \itemize{  
+#' \item The \code{cscv} type shows in-sample
+#' and out-of-sample results by CSCV iteration case (default).  
+#' \item The \code{degradation} type shows the performance degradation regression 
+#' fit results and the probability of loss.  
+#' \item The \code{dominance} type shows the results of the first-order and 
+#' second-order stochastic dominance analysis using two axes.
+#' \item The \code{pairs} type shows the in-sample and out-of-sample 
+#' case selections.
+#' \item The \code{ranks} type shows the sorted performance ranks results.
+#' \item The \code{selection} type shows the case selection frequencies.
+#' }
+#' @param x a \code{pbo} object as returned by \code{\link{pbo}}.
 #' @param data should not be used
-#' @param plotType one of cscv, degradation, dominance, pairs, ranks or selection
+#' @param plotType one of \code{cscv}, \code{degradation}, \code{dominance},
+#' \code{pairs}, \code{ranks} or \code{selection}.  
 #' @param col_bar histogram bar fill color
 #' @param col_line density plot line color
-#' @param col_sd1 stochastic dominance first line color
-#' @param col_sd2 stochastic dominance second line color
+#' @param col_sd1 color of two first-order stochastic dominance lines
+#' @param col_sd2 color of the single second-order stochastic dominance line
 #' @param xlab x-axis label, default computed if not provided
 #' @param ylab y-axis label, default computed if not provided
 #' @param main plot title, default computed if not provided
 #' @param lwd line width, default 1, passed to panels and legends
-#' @param lty_sd line type array for stochastic dominance plot, e.g. c(2,3,5)
+#' @param lty_sd line type array for stochastic dominance plot, 
+#' e.g. c(2,3,5)
 #' @param ylab_left dominance plot left-hand axis label
 #' @param ylab_right dominance plot right-hand axis label
-#' @param increment stochastic dominance distribution generator increment, e.g. 0.1 steps
+#' @param increment stochastic dominance distribution generator increment, 
+#' e.g. 0.1 steps
 #' @param osr_threshold out-of-sample rank threshold for filtering, default 50
 #' @param sel_threshold selection frequency threshold for filtering, default 50
 #' @param show_eqn whether to show the line equation annotation, default TRUE
-#' @param show_threshold whether to show the probability of loss annotation, default TRUE
-#' @param show_config whether to show the study dimension annotations, default TRUE
-#' @param show_grid whether to show the panel grid, default TRUE
-#' @param show_prob whether to show the probability value in dominance plot, default TRUE
-#' @param show_rug whether to show scatter rugs near the axes, default TRUE
-#' @param ... other parameters passed to 'xyplot' or its panels
-xyplot.pbo <- function(p,
+#' @param show_threshold whether to show the probability of loss annotation, 
+#' default TRUE
+#' @param show_config whether to show the study dimension annotations, 
+#' default TRUE
+#' @param show_grid whether to show the panel grid, 
+#' default TRUE
+#' @param show_prob whether to show the probability value in dominance plot, 
+#' default TRUE
+#' @param show_rug whether to show scatter rugs near the axes, 
+#' default TRUE
+#' @param ... other parameters passed to \code{\link[lattice]{xyplot}} 
+#' or its panels
+#' @export
+xyplot.pbo <- function(x,
                        data=NULL,
                        plotType="cscv",
                        show_eqn=TRUE,
@@ -175,12 +223,16 @@ xyplot.pbo <- function(p,
   # confirm plot type specified
   ptypes = c('cscv','degradation','dominance','pairs','ranks','selection')
   if ( ! plotType %in% ptypes )
-    stop(paste("xyplot argument 'plotType' must be one of",toString(ptypes)))
+    stop(paste("xyplot with 'pbo' object argument 'plotType' must be one of",
+               toString(ptypes)))
 
   # advise ignoring data
   if (!is.null(match.call()$data))
-    warning("explicit 'data' specification ignored; using 'pbo' object")
+    warning("xyplot explicit 'data' specification ignored; using 'pbo' object")
 
+  # reference to object for use within panels
+  p <- x
+  
   # cscv plot
   if (plotType == "cscv") {
 
@@ -194,10 +246,10 @@ xyplot.pbo <- function(p,
                         ')',
                         sep='' ))
 
-    x <- p$results
-    y <- data.frame(cbind(nis=as.numeric(x[,'n*']),
-                          noos=as.numeric(x[,'n_max_oos']),
-                          osr=as.numeric(x[,'os_rank'])))
+    osr <- NULL # only to appease check
+    y <- data.frame(cbind(nis=as.numeric(p$results[,'n*']),
+                          noos=as.numeric(p$results[,'n_max_oos']),
+                          osr=as.numeric(p$results[,'os_rank'])))
 
     rv = xyplot(noos + nis ~ 1:nrow(y),
                 data=y,
@@ -206,11 +258,6 @@ xyplot.pbo <- function(p,
                 xlab=xlab,
                 ylab=ylab,
                 lwd=lwd,
-                #key = list(text=list(c("OOS","IS")),
-                #            points=pch,
-                #            col=col, # trellis.par.get()$superpose.symbol$col[1:2],
-                #            pch=pch,
-                #            columns=2),
                 panel = function(x,...) {
                   panel.xyplot(x,...)
                   if ( show_grid )
@@ -260,7 +307,6 @@ xyplot.pbo <- function(p,
                   }
                   ya <- unit(1, "npc") - unit(3, "mm")
                   if ( show_eqn ) {
-                    require(grid,quietly=TRUE)
                     grid.text(label = bquote(R_OOS == .(p$intercept) (R_IS) + .(p$slope) + err ~~ AdjR^2 == .(p$ar2)),
                               x = unit(0, "npc") + unit(3, "mm"),
                               y = ya,
@@ -270,7 +316,6 @@ xyplot.pbo <- function(p,
                   if (show_config)
                     pbo_show_config(p)
                   if (show_threshold) {
-                    require(grid,quietly=TRUE)
                     if ( p$threshold == 1 ) { # ugly but ifelse won't work on bquote
                       grid.text(label = bquote(P(R_OOS<1) ==  .(p$below_threshold)),
                                 x = unit(1, "npc") - unit(3, "mm"),
@@ -292,7 +337,6 @@ xyplot.pbo <- function(p,
 
   # stochastic dominance plot
   if ( plotType == "dominance") {
-    require(latticeExtra,quietly=TRUE)
 
     if (missing(main))
       main="Stochastic Dominance"
@@ -313,13 +357,6 @@ xyplot.pbo <- function(p,
     sorted <- data.frame(cbind(sort(erbn(y)),sort(erb(y))))
     sorted$sd2 <- sorted$X2 - sorted$X1
     colnames(sorted) <- c("Rbn","Rb","SD2")
-
-    # trellis.par.set(plot.line$col",c("blue","purple","green"))
-    #theme = trellis.par.get()
-    #trellis.par.set(superpose.line=list(lty=c(1,2,4),
-    #                                    col=c("darkblue","purple","green")),
-    #                ylab.text = list(col=c("black"))
-    #)
     colors = c(col_sd1,col_sd1,col_sd2)
 
     x1 = xyplot(Rbn + Rb ~ y,
@@ -335,7 +372,9 @@ xyplot.pbo <- function(p,
                          lines=list(col=colors,
                                     lty=lty_sd,
                                     lwd=lwd),
-                         text=list(names=c("Optimized (L)","Non-Optimized (L)","SD2 (R)"))
+                         text=list(names=c("Optimized (L)",
+                                           "Non-Optimized (L)",
+                                           "SD2 (R)"))
                 ),
 
                 panel = function(x, ...){
@@ -397,10 +436,10 @@ xyplot.pbo <- function(p,
                          ')',
                          sep='' ))
 
-    x <- p$results
-    y <- data.frame(cbind(nis=as.numeric(x[,'n*']),
-                          noos=as.numeric(x[,'n_max_oos']),
-                          osr=as.numeric(x[,'os_rank'])))
+    # x <- p$results
+    y <- data.frame(cbind(nis=as.numeric(p$results[,'n*']),
+                          noos=as.numeric(p$results[,'n_max_oos']),
+                          osr=as.numeric(p$results[,'os_rank'])))
 
     rv = xyplot(noos ~ nis,
                 data=y,
@@ -435,10 +474,10 @@ xyplot.pbo <- function(p,
                         ')',
                         sep='' ))
 
-    x <- p$results
-    y <- data.frame(cbind(nis=as.numeric(x[,'n*']),
-                          noos=as.numeric(x[,'n_max_oos']),
-                          osr=as.numeric(x[,'os_rank'])))
+    # x <- p$results
+    y <- data.frame(cbind(nis=as.numeric(p$results[,'n*']),
+                          noos=as.numeric(p$results[,'n_max_oos']),
+                          osr=as.numeric(p$results[,'os_rank'])))
 
     rv = xyplot(osr ~ nis,
                 data=y,
@@ -473,8 +512,9 @@ xyplot.pbo <- function(p,
                          ')',
                          sep='' ))
 
-    x <- p$results
-    ns <- as.integer(x[,'n*']) # n_star result in-sample
+    # x <- p$results
+    Freq <- NULL # only to appease check
+    ns <- as.integer(p$results[,'n*']) # n_star result in-sample
     tns <- data.frame(table(ns)) # for frequency counts
     tns$ns <- reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
 

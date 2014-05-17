@@ -70,6 +70,7 @@ for ( i in 1:N ) M[,i] <- rt(T,10) / 100
 
 # compute and plot
 my_pbo <- pbo(M,S,F=Omega,threshold=1)
+summary(my_pbo)
 histogram(my_pbo)
 dotplot(my_pbo,pch=15,col=2,cex=1.5)
 xyplot(my_pbo,plotType="cscv",cex=0.8,show_rug=FALSE,osr_threshold=100)
