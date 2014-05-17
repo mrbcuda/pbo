@@ -16,7 +16,9 @@ Depends:
     lattice,
     latticeExtra,
     grid,
-    utils
+    utils,
+    testthat,
+    doParallel
 Suggests:
     PerformanceAnalytics,
     foreach
