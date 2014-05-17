@@ -6,7 +6,7 @@
 \method{xyplot}{pbo}(x, data = NULL, plotType = "cscv", show_eqn = TRUE,
   show_threshold = TRUE, show_config = TRUE, show_rug = TRUE,
   show_prob = TRUE, show_grid = TRUE, increment = 0.1,
-  osr_threshold = 50, sel_threshold = 50, xlab, ylab, main, lwd = 1,
+  osr_threshold = 0, sel_threshold = 0, xlab, ylab, main, lwd = 1,
   ylab_left, ylab_right, col_bar, col_line, col_sd1 = "#3366cc",
   col_sd2 = "#339999", lty_sd = c(1, 2, 4), ...)
 }
@@ -44,9 +44,9 @@ e.g. c(2,3,5)}
 \item{increment}{stochastic dominance distribution generator increment,
 e.g. 0.1 steps}
 
-\item{osr_threshold}{out-of-sample rank threshold for filtering, default 50}
+\item{osr_threshold}{out-of-sample rank threshold for filtering, default 0}
 
-\item{sel_threshold}{selection frequency threshold for filtering, default 50}
+\item{sel_threshold}{selection frequency threshold for filtering, default 0}
 
 \item{show_eqn}{whether to show the line equation annotation, default TRUE}
 

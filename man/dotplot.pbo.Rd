@@ -5,7 +5,7 @@
 \usage{
 \method{dotplot}{pbo}(x, data = NULL, main,
   xlab = "Sorted Study Number (N)", ylab = "IS Selection Frequency",
-  show_config = TRUE, show_grid = TRUE, sel_threshold = 50, ...)
+  show_config = TRUE, show_grid = TRUE, sel_threshold = 0, ...)
 }
 \arguments{
 \item{x}{a \code{pbo} object as returned by \code{\link[pbo]{pbo}}.}
@@ -27,7 +27,7 @@ default TRUE}
 \item{show_grid}{whether to show the grid panel, default TRUE}
 
 \item{sel_threshold}{the minimum in-sample frequency subsetting threshold,
-default 50; selection frequencies at or below this value will be omitted}
+default 0; selection frequencies at or below this value will be omitted}
 
 \item{...}{other parameters as passed to \code{\link[lattice]{dotplot}}.}
 }

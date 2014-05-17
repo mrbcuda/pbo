@@ -38,7 +38,7 @@ pbo <- function(m,s=4,f=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
   n <- ncol(m)             # studies
   cs <- combn(s,s/2)       # combinations
   sn <- t / s              # partition size
-  test_config <- bquote(n == .(n) ~~ t== .(t) ~~ s == .(s))
+  test_config <- bquote(N == .(n) ~~ T == .(t) ~~ S == .(s))
   
   # initialize results lists
   cs_results <- list()
@@ -66,8 +66,10 @@ pbo <- function(m,s=4,f=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
     
     # compute performance over the N strategies in each subset
     # could use for R any summary statistic e.g. SharpeRatio or Omega
-    r <- mapply(f,j)
-    r_bar <- mapply(f,j_bar)
+    # r <- mapply(f,j)
+    # r_bar <- mapply(f,j_bar)
+    r <- f(j)
+    r_bar <- f(j_bar)
     
     # compute n* by argmax over R vector
     n_star <- which.max(r)

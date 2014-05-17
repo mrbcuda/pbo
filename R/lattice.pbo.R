@@ -97,7 +97,7 @@ histogram.pbo <- function(x,
 #' default TRUE
 #' @param show_grid whether to show the grid panel, default TRUE
 #' @param sel_threshold the minimum in-sample frequency subsetting threshold,
-#' default 50; selection frequencies at or below this value will be omitted
+#' default 0; selection frequencies at or below this value will be omitted
 #' @param ... other parameters as passed to \code{\link[lattice]{dotplot}}.
 #' @keywords pbo backtest overfitting
 #' @export
@@ -108,7 +108,7 @@ dotplot.pbo <- function(x,
                         ylab="IS Selection Frequency",
                         show_config=TRUE,
                         show_grid=TRUE,
-                        sel_threshold=50,
+                        sel_threshold=0,
                         ...)
 {
   # advise ignoring data
@@ -179,8 +179,8 @@ dotplot.pbo <- function(x,
 #' @param ylab_right dominance plot right-hand axis label
 #' @param increment stochastic dominance distribution generator increment, 
 #' e.g. 0.1 steps
-#' @param osr_threshold out-of-sample rank threshold for filtering, default 50
-#' @param sel_threshold selection frequency threshold for filtering, default 50
+#' @param osr_threshold out-of-sample rank threshold for filtering, default 0
+#' @param sel_threshold selection frequency threshold for filtering, default 0
 #' @param show_eqn whether to show the line equation annotation, default TRUE
 #' @param show_threshold whether to show the probability of loss annotation, 
 #' default TRUE
@@ -205,8 +205,8 @@ xyplot.pbo <- function(x,
                        show_prob=TRUE,
                        show_grid=TRUE,
                        increment=0.1,
-                       osr_threshold=50,
-                       sel_threshold=50,
+                       osr_threshold=0,
+                       sel_threshold=0,
                        xlab,
                        ylab,
                        main,
