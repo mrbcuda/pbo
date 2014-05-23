@@ -35,6 +35,9 @@ default 0; selection frequencies at or below this value will be omitted}
 Draws an annotated dot plot of study selection sorted
 by in-sample selection frequency.
 }
+\seealso{
+pbo, histogram.pbo, xyplot.pbo
+}
 \keyword{backtest}
 \keyword{overfitting}
 \keyword{pbo}

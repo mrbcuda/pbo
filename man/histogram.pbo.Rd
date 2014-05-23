@@ -38,6 +38,6 @@ Uses \pkg{lattice} function \code{\link[lattice]{histogram}},
 class-specific annotations.
 }
 \seealso{
-pbo
+pbo, dotplot.pbo, xyplot.pbo
 }
 

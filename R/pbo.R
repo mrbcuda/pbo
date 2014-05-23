@@ -13,9 +13,11 @@
 #' (e.g. 0 for Sharpe, 1 for Omega)
 #' @param inf_sub infinity substitution value for reasonable plotting
 #' @param allow_parallel whether to enable parallel processing, default FALSE
-#' @keywords probability backtest overfitting PBO
+#' @keywords probability backtest overfitting PBO CSCV
 #' @return object of class \code{pbo} containing list of PBO calculation results 
 #' and settings
+#' @export
+#' @importFrom utils combn
 #' @references Baily et al., "The Probability of Backtest Overfitting," 
 #' \url{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253}
 #' @examples

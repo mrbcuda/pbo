@@ -3,6 +3,7 @@
 #' Writes grid text to a default predetermined location.
 #' @note Meant for internal use only.
 #' @param p an object of class \code{pbo} as returned by \code{\link[pbo]{pbo}}.
+#' @import grid
 pbo_show_config <- function(p) {
   grid.text(label=p$test_config,
             x = unit(1,"npc") - unit(3,"mm"),
@@ -29,7 +30,11 @@ pbo_show_config <- function(p) {
 #' @param col_line density plot line color passed to density plot panel
 #' @param ... other parameters passed to \code{\link[lattice]{histogram}},
 #' \code{\link[lattice]{densityplot}}, or \code{\link[lattice]{panel.abline}}.
-#' @seealso pbo
+#' @seealso pbo, dotplot.pbo, xyplot.pbo
+#' @importFrom lattice histogram
+#' @importFrom lattice panel.histogram
+#' @importFrom lattice panel.densityplot
+#' @importFrom lattice panel.abline
 #' @export
 histogram.pbo <- function(x,
                           data=NULL,
@@ -100,7 +105,11 @@ histogram.pbo <- function(x,
 #' default 0; selection frequencies at or below this value will be omitted
 #' @param ... other parameters as passed to \code{\link[lattice]{dotplot}}.
 #' @keywords pbo backtest overfitting
+#' @importFrom lattice dotplot
+#' @importFrom lattice panel.xyplot
+#' @importFrom lattice panel.grid
 #' @export
+#' @seealso pbo, histogram.pbo, xyplot.pbo
 dotplot.pbo <- function(x,
                         data=NULL,
                         main,
@@ -194,7 +203,15 @@ dotplot.pbo <- function(x,
 #' default TRUE
 #' @param ... other parameters passed to \code{\link[lattice]{xyplot}} 
 #' or its panels
+#' @importFrom lattice xyplot
+#' @importFrom lattice panel.xyplot
+#' @importFrom lattice panel.rug
+#' @importFrom lattice panel.grid
+#' @importFrom lattice panel.lmline
+#' @importFrom lattice panel.abline
 #' @export
+#' @keywords PBO, CSCV
+#' @seealso pbo, histogram.pbo, xyplot.pbo
 xyplot.pbo <- function(x,
                        data=NULL,
                        plotType="cscv",
@@ -204,7 +221,7 @@ xyplot.pbo <- function(x,
                        show_rug=TRUE,
                        show_prob=TRUE,
                        show_grid=TRUE,
-                       increment=0.1,
+                       increment=0.01,
                        osr_threshold=0,
                        sel_threshold=0,
                        xlab,

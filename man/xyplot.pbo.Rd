@@ -5,7 +5,7 @@
 \usage{
 \method{xyplot}{pbo}(x, data = NULL, plotType = "cscv", show_eqn = TRUE,
   show_threshold = TRUE, show_config = TRUE, show_rug = TRUE,
-  show_prob = TRUE, show_grid = TRUE, increment = 0.1,
+  show_prob = TRUE, show_grid = TRUE, increment = 0.01,
   osr_threshold = 0, sel_threshold = 0, xlab, ylab, main, lwd = 1,
   ylab_left, ylab_right, col_bar, col_line, col_sd1 = "#3366cc",
   col_sd2 = "#339999", lty_sd = c(1, 2, 4), ...)
@@ -89,4 +89,9 @@ case selections.
 \item The \code{selection} type shows the case selection frequencies.
 }
 }
+\seealso{
+pbo, histogram.pbo, xyplot.pbo
+}
+\keyword{CSCV}
+\keyword{PBO,}
 

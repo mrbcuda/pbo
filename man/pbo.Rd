@@ -50,6 +50,7 @@ p <- pbo(m,s,f=Omega,threshold=1)
 Baily et al., "The Probability of Backtest Overfitting,"
 \url{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253}
 }
+\keyword{CSCV}
 \keyword{PBO}
 \keyword{backtest}
 \keyword{overfitting}
