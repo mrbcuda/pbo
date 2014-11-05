@@ -69,7 +69,7 @@ The package also supports parallel execution on multicore hardware, providing a 
 
 For example, using the `doParallel` package we can establish a multicore cluster and enable multiple workers by passing the above `m` and `s` values along with the argument `allow_parallel=TRUE` to `pbo`as follows:
 
-```{r,echo=TRUE,eval=TRUE}
+```{r,echo=TRUE,eval=FALSE}
 require(doParallel)
 
 cluster <- makeCluster(detectCores())
