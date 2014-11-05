@@ -1,7 +1,6 @@
 # unit tests for pbo 
 require(testthat)
 require(pbo)
-require(doParallel)
 
 context("Parallel iteration")
 
@@ -22,7 +21,9 @@ sharpe <- function(x,rf=0.03/252) {
 }
 
 test_that("parallel workers succeed", {
+  skip_on_cran()
   require(doParallel)
+  
   cluster <- makeCluster(detectCores())
   registerDoParallel(cluster)
   p_pbo <- pbo(m,s,f=sharpe,threshold=1,allow_parallel=TRUE)
