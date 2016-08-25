@@ -5,11 +5,11 @@ Probability of Backtest Overfitting
 
 **News: This [R package PBO](http://cran.r-project.org/web/packages/pbo/index.html) is available on CRAN.**
 
-Implements in R some of the ideas found in the Bailey et al. paper identified below.  In particular we use combinatorially symmetric cross validation (CSCV) to implement strategy performance tests evaluated by the Omega ratio. We compute the probability of backtest overfit, performance degradation, probability of loss, and stochastic dominance.  We plot visual representations of these using the `lattice` package.     
+Implements in R some of the ideas found in the Bailey et al. paper identified below.  In particular we use combinatorially symmetric cross validation (CSCV) to implement strategy performance tests evaluated by the Omega ratio. We compute the probability of backtest overfit, performance degradation, probability of loss, and stochastic dominance.  We plot visual representations of these using the `lattice` package.
 
 The reference authors used the Sharpe ratio as the performance measure.  Other measures are suitable according to the assumptions laid out in the paper.
 
-Example plots attached below.  The first four illustrate a test with low overfitting (T-distribution, N=100, T=1600, S=8). The second four illustrate a test from the reference paper with high overfitting (normal distribution, N=100, T=1000, S=8).  The third batch illustrate some study selection performance plots for both cases.  
+Example plots attached below.  The first four illustrate a test with low overfitting (T-distribution, N=100, T=1600, S=8). The second four illustrate a test from the reference paper with high overfitting (normal distribution, N=100, T=1000, S=8).  The third batch illustrate some study selection performance plots for both cases.
 
 Example test case, low overfitting:
 
@@ -36,7 +36,7 @@ Example study selection performance for the low and high cases:
 ![high7](man/figures/high7.png)
 
 
-More examples with a larger number of combinations on the same high- and low-overfitting test cases.  There are 12,780 CSCV combinations with the these tests (normal distribution, N=200, T=2000, S=16, Omega ratio performance).  
+More examples with a larger number of combinations on the same high- and low-overfitting test cases.  There are 12,780 CSCV combinations with the these tests (normal distribution, N=200, T=2000, S=16, Omega ratio performance).
 
 <img src="man/figures/large_high1.png" alt="lh1" style="width: 590px;"/>
 <img src="man/figures/large_high2.png" alt="lh2" style="width: 590px;"/>
@@ -71,7 +71,7 @@ M <- data.frame(matrix(NA,T,N,byrow=TRUE,dimnames=list(1:T,1:N)),check.names=FAL
 for ( i in 1:N ) M[,i] <- rt(T,10) / 100
 
 # compute and plot
-my_pbo <- pbo(M,S,F=Omega,threshold=1)
+my_pbo <- pbo(M,S,f=Omega,threshold=1)
 summary(my_pbo)
 histogram(my_pbo)
 dotplot(my_pbo,pch=15,col=2,cex=1.5)
@@ -121,7 +121,7 @@ M[,i] = M[,i] + mu_case - mean(M[,i]) # re-center
 
 cluster <- makeCluster(detectCores())
 registerDoParallel(cluster)
-pp_pbo <- pbo(M,S,F=Omega,threshold=1,allow_parallel=TRUE)
+pp_pbo <- pbo(M,S,f=Omega,threshold=1,allow_parallel=TRUE)
 stopCluster(cluster)
 histogram(pp_pbo)
 ```
