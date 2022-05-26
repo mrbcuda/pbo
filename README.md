@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/mrbcuda/pbo.png?branch=master)](https://travis-ci.org/mrbcuda/pbo)
+
 
 Probability of Backtest Overfitting
 ===================================
 
-**News: This [R package PBO](http://cran.r-project.org/web/packages/pbo/index.html) is available on CRAN.**
+**News: This [R package PBO](https://CRAN.R-project.org/package=pbo) is available on CRAN.**
 
 Implements in R some of the ideas found in the Bailey et al. paper identified below.  In particular we use combinatorially symmetric cross validation (CSCV) to implement strategy performance tests evaluated by the Omega ratio. We compute the probability of backtest overfit, performance degradation, probability of loss, and stochastic dominance.  We plot visual representations of these using the `lattice` package.     
 
@@ -136,6 +136,6 @@ Packages
 
 Reference
 ---------
-Bailey, David H. and Borwein, Jonathan M. and Lopez de Prado, Marcos and Zhu, Qiji Jim, The Probability of Back-Test Overfitting (September 1, 2013). Available at SSRN: http://ssrn.com/abstract=2326253 or http://dx.doi.org/10.2139/ssrn.2326253
+Bailey, David H. and Borwein, Jonathan M. and Lopez de Prado, Marcos and Zhu, Qiji Jim, The Probability of Back-Test Overfitting (September 1, 2013). Available at SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253.
 
 

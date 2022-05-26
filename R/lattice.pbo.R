@@ -48,7 +48,7 @@ histogram.pbo <- function(x,
   # advise ignoring data
   if (!is.null(match.call()$data))
     warning("explicit 'data' specification ignored; using 'pbo' object")
-
+  
   # class reference for use within panels
   p <- x
   
@@ -84,7 +84,7 @@ histogram.pbo <- function(x,
             },
             ...
   )
-
+  
 }
 
 #' @title PBO in-sample selection dot plot.
@@ -106,8 +106,8 @@ histogram.pbo <- function(x,
 #' @param ... other parameters as passed to \code{\link[lattice]{dotplot}}.
 #' @keywords pbo backtest overfitting
 #' @importFrom lattice dotplot
-#' @importFrom lattice panel.xyplot
-#' @importFrom lattice panel.grid
+#' @importFrom lattice panel.xyplot panel.grid
+#' @importFrom stats reorder
 #' @export
 #' @seealso pbo, histogram.pbo, xyplot.pbo
 dotplot.pbo <- function(x,
@@ -123,17 +123,17 @@ dotplot.pbo <- function(x,
   # advise ignoring data
   if (!is.null(match.call()$data))
     warning("explicit 'data' specification ignored; using 'pbo' object")
-
+  
   p <- x
   # x <- p$results
   Freq <- NULL # only to appease check
   ns <- as.integer(x$results[,'n*']) # n_star result in-sample
   tns <- data.frame(table(ns)) # for frequency counts
-  tns$ns <- reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
-
+  tns$ns <- stats::reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
+  
   if (missing(main))
     main=paste("IS Study Selection (Frequency > ",sel_threshold,")",sep='')
-
+  
   dotplot(Freq ~ ns,
           data=tns,
           subset=Freq>sel_threshold,
@@ -204,13 +204,12 @@ dotplot.pbo <- function(x,
 #' @param ... other parameters passed to \code{\link[lattice]{xyplot}} 
 #' or its panels
 #' @importFrom lattice xyplot
-#' @importFrom lattice panel.xyplot
-#' @importFrom lattice panel.rug
-#' @importFrom lattice panel.grid
-#' @importFrom lattice panel.lmline
-#' @importFrom lattice panel.abline
+#' @importFrom lattice panel.xyplot panel.rug panel.grid
+#' @importFrom lattice panel.lmline panel.abline
+#' @importFrom latticeExtra doubleYScale
+#' @importFrom stats ecdf reorder
 #' @export
-#' @keywords PBO, CSCV
+#' @keywords PBO CSCV
 #' @seealso pbo, histogram.pbo, xyplot.pbo
 xyplot.pbo <- function(x,
                        data=NULL,
@@ -242,17 +241,17 @@ xyplot.pbo <- function(x,
   if ( ! plotType %in% ptypes )
     stop(paste("xyplot with 'pbo' object argument 'plotType' must be one of",
                toString(ptypes)))
-
+  
   # advise ignoring data
   if (!is.null(match.call()$data))
     warning("xyplot explicit 'data' specification ignored; using 'pbo' object")
-
+  
   # reference to object for use within panels
   p <- x
   
   # cscv plot
   if (plotType == "cscv") {
-
+    
     if (missing(xlab))
       xlab='CSCV Case'
     if (missing(ylab))
@@ -262,12 +261,12 @@ xyplot.pbo <- function(x,
                         .(osr_threshold),
                         ')',
                         sep='' ))
-
+    
     osr <- NULL # only to appease check
     y <- data.frame(cbind(nis=as.numeric(p$results[,'n*']),
                           noos=as.numeric(p$results[,'n_max_oos']),
                           osr=as.numeric(p$results[,'os_rank'])))
-
+    
     rv = xyplot(noos + nis ~ 1:nrow(y),
                 data=y,
                 subset=osr>osr_threshold,
@@ -287,11 +286,11 @@ xyplot.pbo <- function(x,
                 ...
     )
   }
-
-
+  
+  
   # performance degradation plot
   if (plotType == "degradation") {
-
+    
     if (missing(main))
       main="OOS Performance Degradation"
     if (missing(xlab))
@@ -302,11 +301,11 @@ xyplot.pbo <- function(x,
       col_bar="#cc99cc"
     if (missing(col_line))
       col_line="#3366cc"
-
+    
     # plot Rn pairs
     cloud_span <- c(signif(min(p$rn_pairs),-3),
                     signif(max(p$rn_pairs),3)) # axis range
-
+    
     rv = xyplot(p$rn_pairs$Rbn ~ p$rn_pairs$Rn,
                 main = main,
                 xlab = xlab,
@@ -351,31 +350,31 @@ xyplot.pbo <- function(x,
                 ...
     )
   }
-
+  
   # stochastic dominance plot
   if ( plotType == "dominance") {
-
+    
     if (missing(main))
       main="Stochastic Dominance"
     if (missing(ylab_left))
       ylab_left="Frequency"
     if (missing(ylab_right))
       ylab_right="2nd Ord. Stochastic Dominance"
-
+    
     # uses n* items from R-bar for one line, and all n items from R-bar for the other line
     # create cumulative distribution functions for each data set,
     # then generate samples to plot
     y <- seq(min(p$rn_pairs$Rbn),
              max(p$rn_pairs$Rbn),
              increment) # reasonable R range for evaluation
-    erbn <- ecdf(p$rn_pairs$Rbn) # optimized
-    erb <- ecdf(sapply(1:ncol(p$combos),
+    erbn <- stats::ecdf(p$rn_pairs$Rbn) # optimized
+    erb <- stats::ecdf(sapply(1:ncol(p$combos),
                        function(i) p$results[[i,2]])) # non-optimized (all)
     sorted <- data.frame(cbind(sort(erbn(y)),sort(erb(y))))
     sorted$sd2 <- sorted$X2 - sorted$X1
     colnames(sorted) <- c("Rbn","Rb","SD2")
     colors = c(col_sd1,col_sd1,col_sd2)
-
+    
     x1 = xyplot(Rbn + Rb ~ y,
                 data = sorted,
                 type="l",
@@ -393,7 +392,7 @@ xyplot.pbo <- function(x,
                                            "Non-Optimized (L)",
                                            "SD2 (R)"))
                 ),
-
+                
                 panel = function(x, ...){
                   panel.xyplot(x,...)
                   panel.abline(v=p$threshold,type="l",lty=3)
@@ -433,16 +432,16 @@ xyplot.pbo <- function(x,
                 },
                 ...
     )
-    rv = doubleYScale(x1,
-                      x2,
-                      add.ylab2=TRUE,
-                      use.style=FALSE
+    rv = latticeExtra::doubleYScale(x1,
+                                    x2,
+                                    add.ylab2=TRUE,
+                                    use.style=FALSE
     )
   }
-
-
+  
+  
   if (plotType == "pairs") {
-
+    
     if (missing(xlab))
       xlab='IS Selection (N)'
     if (missing(ylab))
@@ -452,12 +451,12 @@ xyplot.pbo <- function(x,
                          .(osr_threshold),
                          ')',
                          sep='' ))
-
+    
     # x <- p$results
     y <- data.frame(cbind(nis=as.numeric(p$results[,'n*']),
                           noos=as.numeric(p$results[,'n_max_oos']),
                           osr=as.numeric(p$results[,'os_rank'])))
-
+    
     rv = xyplot(noos ~ nis,
                 data=y,
                 subset=osr>osr_threshold,
@@ -477,10 +476,10 @@ xyplot.pbo <- function(x,
                 ...
     )
   }
-
-
+  
+  
   if (plotType == "ranks") {
-
+    
     if (missing(xlab))
       xlab='Selected IS Study (N)'
     if (missing(ylab))
@@ -490,12 +489,12 @@ xyplot.pbo <- function(x,
                         .(osr_threshold),
                         ')',
                         sep='' ))
-
+    
     # x <- p$results
     y <- data.frame(cbind(nis=as.numeric(p$results[,'n*']),
                           noos=as.numeric(p$results[,'n_max_oos']),
                           osr=as.numeric(p$results[,'os_rank'])))
-
+    
     rv = xyplot(osr ~ nis,
                 data=y,
                 subset=osr>osr_threshold,
@@ -516,9 +515,9 @@ xyplot.pbo <- function(x,
                 ...
     )
   }
-
+  
   if ( plotType == "selection") {
-
+    
     if (missing(xlab))
       xlab="Sorted Study Number (N)"
     if (missing(ylab))
@@ -528,13 +527,13 @@ xyplot.pbo <- function(x,
                          .(sel_threshold),
                          ')',
                          sep='' ))
-
+    
     # x <- p$results
     Freq <- NULL # only to appease check
     ns <- as.integer(p$results[,'n*']) # n_star result in-sample
     tns <- data.frame(table(ns)) # for frequency counts
-    tns$ns <- reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
-
+    tns$ns <- stats::reorder(tns$ns,-tns$Freq) # sorted by decreasing frequency
+    
     rv = xyplot(Freq ~ ns,
                 data=tns,
                 subset=Freq>sel_threshold,
@@ -554,7 +553,7 @@ xyplot.pbo <- function(x,
                 ...
     )
   }
-
+  
   # returns the plot, flushing the graphics
   rv
 }

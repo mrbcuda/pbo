@@ -154,4 +154,4 @@ summary(p_pbo)
 
 Reference
 ---------
-Bailey, David H. and Borwein, Jonathan M. and Lopez de Prado, Marcos and Zhu, Qiji Jim, "The Probability of Back-Test Overfitting" (September 1, 2013). Available at [SSRN](http://ssrn.com/abstract=2326253 or http://dx.doi.org/10.2139/ssrn.2326253).
+Bailey, David H. and Borwein, Jonathan M. and Lopez de Prado, Marcos and Zhu, Qiji Jim, "The Probability of Back-Test Overfitting" (September 1, 2013). Available at [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253).

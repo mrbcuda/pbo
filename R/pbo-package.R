@@ -9,8 +9,7 @@
 #' @references See Bailey, David H. and Borwein, Jonathan M. and 
 #' Lopez de Prado, Marcos and Zhu, Qiji Jim, The Probability of Back-Test
 #' Overfitting (September 1, 2013). Available at SSRN. See
-#' \url{http://ssrn.com/abstract=2326253} or 
-#' \url{http://dx.doi.org/10.2139/ssrn.2326253}.
+#' \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253}.
 #' @keywords probability backtest overfitting PBO CSCV
 #' @name pbo-package
 #' @docType package

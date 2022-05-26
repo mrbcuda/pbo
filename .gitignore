@@ -5,7 +5,10 @@
 .RData
 *.Rcheck/*
 README.html
-
-# Example code in package build process
 *-Ex.R
 .Rproj.user
+docs
+*.rds
+inst/doc
+/doc/
+/Meta/

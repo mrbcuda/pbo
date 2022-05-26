@@ -17,9 +17,11 @@
 #' @return object of class \code{pbo} containing list of PBO calculation results 
 #' and settings
 #' @export
+#' @importFrom foreach %dopar%
 #' @importFrom utils combn
+#' @importFrom stats lm
 #' @references Baily et al., "The Probability of Backtest Overfitting," 
-#' \url{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253}
+#' \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253}
 #' @examples
 #' \dontrun{
 #' require(pbo)
@@ -91,8 +93,7 @@ pbo <- function(m,s=4,f=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
   # for each partition combination
   cs_results <- NULL
   if ( allow_parallel ) {
-    require(foreach,quietly=TRUE)
-    cs_results <- foreach ( csi=1:ncol(cs),
+    cs_results <- foreach::foreach ( csi=1:ncol(cs),
                 .combine=rbind,
                 .multicombine=TRUE) %dopar%
       cs_compute(csi)
@@ -127,7 +128,7 @@ pbo <- function(m,s=4,f=NA,threshold=0,inf_sub=6,allow_parallel=FALSE) {
   colnames(rn_pairs) <- c("Rn","Rbn")
   
   # linear fit to pairs, extract results for plot annotations
-  linear_fit <- lm(rn_pairs)
+  linear_fit <- stats::lm(rn_pairs)
   m <- signif(as.numeric(linear_fit$coefficients[1]),digits=5) # slope
   b <- signif(as.numeric(linear_fit$coefficients[2]),digits=5) # intercept
   ar2 <- signif(summary(linear_fit)$adj.r.squared,digits=2) # adj R-squared
