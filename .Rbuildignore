@@ -3,3 +3,4 @@
 .travis.yml
 ^\.travis\.yml$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
